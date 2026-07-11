@@ -5,30 +5,43 @@ import NavbarSearch from "@/components/NavbarSearch";
 interface NavbarProps {
   navItems?: string[];
   brandName?: string;
+  activeItem?: string;
 }
 
 export default function Navbar({
   navItems = ["Home", "Shows", "Movies", "Books", "Games"],
   brandName = "WatchList",
+  activeItem = "Home",
 }: NavbarProps) {
+  const activeNavClass =
+    "bg-[color:var(--accent)] text-[color:var(--accent-foreground)]";
+  const inactiveNavClass =
+    "text-[color:var(--muted)] hover:bg-[color:var(--accent)] hover:text-[color:var(--accent-foreground)]";
+
   return (
     <nav className="sticky top-0 z-50 border-b border-[color:var(--border)] bg-[color:var(--nav-bg)] backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-6 px-5 sm:px-8 lg:px-10">
         <div className="flex shrink-0 items-center gap-6">
           <a
             href="#top"
-            className="shrink-0 rounded-md px-3 py-2 text-base font-semibold tracking-wide text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)]"
+            className="shrink-0 rounded-md px-3 py-2 text-base font-semibold tracking-wide text-[color:var(--foreground)] transition hover:bg-[color:var(--accent)]"
           >
             {brandName}
           </a>
 
           <div className="hidden items-center gap-1 rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] p-1 md:flex">
-            {navItems.map((item) =>
-              item === "Home" ? (
+            {navItems.map((item) => {
+              const isActive = item === activeItem;
+              const navClassName = `rounded px-3 py-2 text-sm transition ${
+                isActive ? activeNavClass : inactiveNavClass
+              }`;
+
+              return item === "Home" ? (
                 <Link
                   key={item}
                   href="/"
-                  className="rounded px-3 py-2 text-sm text-[color:var(--muted)] transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]"
+                  className={navClassName}
+                  aria-current={isActive ? "page" : undefined}
                 >
                   {item}
                 </Link>
@@ -36,13 +49,14 @@ export default function Navbar({
                 <button
                   key={item}
                   type="button"
+                  aria-current={isActive ? "page" : undefined}
                   aria-disabled="true"
-                  className="cursor-default rounded px-3 py-2 text-sm text-[color:var(--muted)] transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]"
+                  className={`cursor-default ${navClassName}`}
                 >
                   {item}
                 </button>
-              ),
-            )}
+              );
+            })}
           </div>
         </div>
 
