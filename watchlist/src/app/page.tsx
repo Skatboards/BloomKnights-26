@@ -91,8 +91,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
       <nav className="sticky top-0 z-50 border-b border-[color:var(--border)] bg-[color:var(--nav-bg)] backdrop-blur-xl">
-        <div className="flex h-16 w-full items-center justify-between gap-6 px-5 sm:px-8 lg:px-10">
-          <div className="flex min-w-0 items-center gap-6">
+        <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-6 px-5 sm:px-8 lg:px-10">
+          <div className="flex shrink-0 items-center gap-6">
             <a
               href="#top"
               className="shrink-0 text-base font-semibold tracking-wide text-[color:var(--foreground)]"
@@ -110,6 +110,8 @@ export default function Home() {
                 </a>
               ))}
             </div>
+          </div>
+          <div className="hidden min-w-0 flex-1 lg:block">
             <label className="sr-only" htmlFor="site-search">
               Search
             </label>
@@ -117,12 +119,12 @@ export default function Home() {
               id="site-search"
               type="search"
               placeholder="Search..."
-              className="hidden h-10 w-56 rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] px-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--border-strong)] focus:bg-[color:var(--surface-strong)] lg:block"
+              className="h-10 w-full rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] px-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--border-strong)] focus:bg-[color:var(--surface-strong)]"
             />
           </div>
           <a
             href="#overview"
-            className="rounded-md bg-[color:var(--foreground)] px-4 py-2 text-sm font-medium text-[color:var(--background)] transition hover:bg-[color:var(--muted-strong)]"
+            className="ml-auto shrink-0 rounded-md bg-[color:var(--foreground)] px-4 py-2 text-sm font-medium text-[color:var(--background)] transition hover:bg-[color:var(--muted-strong)]"
           >
             Launch
           </a>
