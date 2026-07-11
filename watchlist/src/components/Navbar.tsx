@@ -1,18 +1,14 @@
-import React from "react";
 import Link from "next/link";
+import NavbarMenu from "@/components/NavbarMenu";
 
 interface NavbarProps {
   navItems?: string[];
   brandName?: string;
-  ctaText?: string;
-  ctaHref?: string;
 }
 
 export default function Navbar({
   navItems = ["Home", "Shows", "Movies", "Books", "Games"],
   brandName = "WatchList",
-  ctaText = "Launch",
-  ctaHref = "/",
 }: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 border-b border-[color:var(--border)] bg-[color:var(--nav-bg)] backdrop-blur-xl">
@@ -61,12 +57,7 @@ export default function Navbar({
           />
         </div>
 
-        <a
-          href={ctaHref}
-          className="ml-auto shrink-0 rounded-md bg-[color:var(--foreground)] px-4 py-2 text-sm font-medium text-[color:var(--background)] transition hover:bg-[color:var(--accent)]"
-        >
-          {ctaText}
-        </a>
+        <NavbarMenu initialUser={null} />
       </div>
     </nav>
   );

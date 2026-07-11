@@ -180,7 +180,7 @@ async function MediaSections() {
 export default function Home() {
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <Navbar navItems={navItems} ctaText="Browse" />
+      <Navbar navItems={navItems} />
 
       <section
         id="top"
