@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import Navbar from "@/components/Navbar";
 
 const navItems = ["Overview", "Workspace", "Activity", "Settings"];
 
@@ -90,46 +91,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <nav className="sticky top-0 z-50 border-b border-[color:var(--border)] bg-[color:var(--nav-bg)] backdrop-blur-xl">
-        <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-6 px-5 sm:px-8 lg:px-10">
-          <div className="flex shrink-0 items-center gap-6">
-            <a
-              href="#top"
-              className="shrink-0 rounded-md px-3 py-2 text-base font-semibold tracking-wide text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)]"
-            >
-              WatchList
-            </a>
-            <div className="hidden items-center gap-1 rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] p-1 md:flex">
-              {navItems.map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="rounded px-3 py-2 text-sm text-[color:var(--muted)] transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]"
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
-          </div>
-          <div className="hidden min-w-0 flex-1 lg:block">
-            <label className="sr-only" htmlFor="site-search">
-              Search
-            </label>
-            <input
-              id="site-search"
-              type="search"
-              placeholder="Search..."
-              className="h-10 w-full rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] px-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--accent)] focus:bg-[color:var(--accent-soft)]"
-            />
-          </div>
-          <a
-            href="#overview"
-            className="ml-auto shrink-0 rounded-md bg-[color:var(--foreground)] px-4 py-2 text-sm font-medium text-[color:var(--background)] transition hover:bg-[color:var(--accent)]"
-          >
-            Launch
-          </a>
-        </div>
-      </nav>
+      <Navbar navItems={navItems} />
 
       <section id="top" className="border-b border-[color:var(--border)] bg-[color:var(--background)]">
         <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-7xl items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
@@ -292,7 +254,7 @@ export default function Home() {
       <button
         type="button"
         onClick={toggleTheme}
-        className="fixed bottom-4 right-4 z-50 rounded-full border border-[color:var(--border)] bg-[color:var(--nav-bg)] px-4 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-lg backdrop-blur-xl transition hover:bg-[color:var(--surface)]"
+        className="fixed bottom-4 right-4 z-50 rounded-full border border-[color:var(--border)] bg-[color:var(--nav-bg)] px-4 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-lg backdrop-blur-sm transition hover:bg-[color:var(--accent-soft)]"
         aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
         aria-pressed={theme === "light"}
       >
