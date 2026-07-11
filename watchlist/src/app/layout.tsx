@@ -13,9 +13,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Slate App",
-  description: "A basic dark mode web app layout.",
+  title: "WatchList",
+  description: "App to visualize media to watch & share.",
 };
+
+const themeBootstrap = `
+(() => {
+  try {
+    const stored = localStorage.getItem('watchlist-theme');
+    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    const theme = stored === 'light' || stored === 'dark' ? stored : (prefersLight ? 'light' : 'dark');
+    document.documentElement.dataset.theme = theme;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute('content', theme === 'dark' ? '#2a2f2a' : '#f4f4f5');
+    }
+  } catch (error) {
+    document.documentElement.dataset.theme = 'dark';
+  }
+})();
+`;
 
 export default function RootLayout({
   children,
@@ -25,8 +42,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <meta name="color-scheme" content="light dark" />
+        <meta name="theme-color" content="#2a2f2a" />
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
