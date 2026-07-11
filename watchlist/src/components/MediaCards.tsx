@@ -76,7 +76,6 @@ function mergeMeta(...items: Array<MetaItem | undefined>) {
 function MediaCard({
   tone,
   title,
-  subtitle,
   description,
   imageUrl,
   imageAlt,
@@ -137,11 +136,6 @@ function MediaCard({
           <h3 className="text-xl font-semibold leading-7 text-[color:var(--foreground)]">
             {title}
           </h3>
-          {subtitle ? (
-            <p className="mt-1 text-sm font-medium text-[color:var(--muted-strong)]">
-              {subtitle}
-            </p>
-          ) : null}
           <p className="mt-3 line-clamp-3 text-sm leading-6 text-[color:var(--muted)]">
             {description}
           </p>

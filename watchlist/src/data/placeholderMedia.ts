@@ -21,7 +21,6 @@ export const featuredMedia = {
     description:
       "A quiet engineer follows a strange broadcast across the city and finds a story bigger than the signal itself.",
     provider: "TMDB",
-    status: "Queued",
     releaseYear: "2026",
     runtime: "1h 48m",
     rating: "PG-13",
