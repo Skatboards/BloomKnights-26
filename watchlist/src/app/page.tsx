@@ -1,6 +1,4 @@
-"use client";
-
-import { useSyncExternalStore } from "react";
+import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import { BookCard, GameCard, MovieCard, ShowCard } from "@/components/MediaCards";
 import { featuredMedia, placeholderCardsByMediaType, type PlaceholderMediaCard } from "@/data/placeholderMedia";
@@ -40,64 +38,6 @@ const mediaOptions: MediaOption[] = [
   },
 ];
 
-type Theme = "light" | "dark";
-
-const themeStorageKey = "watchlist-theme";
-const themeChangeEvent = "watchlist-theme-change";
-
-function getPreferredTheme(): Theme {
-  if (typeof window === "undefined") {
-    return "dark";
-  }
-
-  const stored = window.localStorage.getItem(themeStorageKey);
-  if (stored === "light" || stored === "dark") {
-    return stored;
-  }
-
-  return window.matchMedia("(prefers-color-scheme: light)").matches
-    ? "light"
-    : "dark";
-}
-
-function getThemeSnapshot(): Theme {
-  if (typeof window === "undefined") {
-    return "dark";
-  }
-
-  const activeTheme = document.documentElement.dataset.theme;
-  if (activeTheme === "light" || activeTheme === "dark") {
-    return activeTheme;
-  }
-
-  return getPreferredTheme();
-}
-
-function subscribeToTheme(onStoreChange: () => void) {
-  window.addEventListener(themeChangeEvent, onStoreChange);
-  window.addEventListener("storage", onStoreChange);
-
-  return () => {
-    window.removeEventListener(themeChangeEvent, onStoreChange);
-    window.removeEventListener("storage", onStoreChange);
-  };
-}
-
-function applyTheme(theme: Theme) {
-  document.documentElement.dataset.theme = theme;
-  window.localStorage.setItem(themeStorageKey, theme);
-
-  const themeColor = document.querySelector('meta[name="theme-color"]');
-  if (themeColor) {
-    themeColor.setAttribute(
-      "content",
-      theme === "dark" ? "#121722" : "#f7f8fa",
-    );
-  }
-
-  window.dispatchEvent(new Event(themeChangeEvent));
-}
-
 function MediaCardRenderer({ card }: { card: PlaceholderMediaCard }) {
   if (card.type === "book") {
     return <BookCard {...card} />;
@@ -114,17 +54,130 @@ function MediaCardRenderer({ card }: { card: PlaceholderMediaCard }) {
   return <GameCard {...card} />;
 }
 
-export default function Home() {
-  const theme = useSyncExternalStore(
-    subscribeToTheme,
-    getThemeSnapshot,
-    () => "dark",
+function MediaCardSkeleton() {
+  return (
+    <article className="grid h-full overflow-hidden rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] shadow-sm">
+      <div className="aspect-[2/1] border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]" />
+      <div className="grid gap-4 p-4">
+        <div className="flex items-center gap-2">
+          <div className="h-6 w-16 rounded bg-[color:var(--panel)]" />
+          <div className="h-6 w-20 rounded border border-[color:var(--border)]" />
+        </div>
+        <div>
+          <div className="h-6 w-3/4 rounded bg-[color:var(--panel)]" />
+          <div className="mt-4 space-y-2">
+            <div className="h-4 rounded bg-[color:var(--surface-strong)]" />
+            <div className="h-4 w-5/6 rounded bg-[color:var(--surface-strong)]" />
+            <div className="h-4 w-2/3 rounded bg-[color:var(--surface-strong)]" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3 border-t border-[color:var(--border)] pt-4">
+          <div className="h-10 rounded bg-[color:var(--surface-strong)]" />
+          <div className="h-10 rounded bg-[color:var(--surface-strong)]" />
+        </div>
+      </div>
+    </article>
   );
+}
 
-  const toggleTheme = () => {
-    applyTheme(theme === "dark" ? "light" : "dark");
-  };
+function MediaSectionsSkeleton() {
+  return (
+    <section
+      id="options"
+      className="border-b border-[color:var(--border)] bg-[color:var(--background)]"
+      aria-busy="true"
+      aria-label="Loading media options"
+    >
+      <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
+        <div className="max-w-3xl">
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
+            Options
+          </p>
+          <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
+            Browse by books, shows, movies, or games.
+          </h2>
+        </div>
 
+        <div className="mt-12 divide-y divide-[color:var(--border)] border-y border-[color:var(--border)]">
+          {mediaOptions.map((option) => (
+            <section
+              key={option.label}
+              className="grid gap-8 py-10 lg:grid-cols-[0.8fr_1.2fr]"
+            >
+              <div>
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--accent)]">
+                  {option.label}
+                </p>
+                <h3 className="mt-3 text-2xl font-semibold text-[color:var(--foreground)]">
+                  {option.title}
+                </h3>
+                <p className="mt-4 max-w-xl text-sm leading-7 text-[color:var(--muted)]">
+                  {option.description}
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <MediaCardSkeleton />
+                <MediaCardSkeleton />
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+async function MediaSections() {
+  return (
+    <section
+      id="options"
+      className="border-b border-[color:var(--border)] bg-[color:var(--background)]"
+    >
+      <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
+        <div className="max-w-3xl">
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
+            Options
+          </p>
+          <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
+            Browse by books, shows, movies, or games.
+          </h2>
+        </div>
+
+        <div className="mt-12 divide-y divide-[color:var(--border)] border-y border-[color:var(--border)]">
+          {mediaOptions.map((option) => (
+            <section
+              key={option.label}
+              aria-labelledby={`${option.label.toLowerCase()}-heading`}
+              className="grid gap-8 py-10 lg:grid-cols-[0.8fr_1.2fr]"
+            >
+              <div>
+                <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--accent)]">
+                  {option.label}
+                </p>
+                <h3
+                  id={`${option.label.toLowerCase()}-heading`}
+                  className="mt-3 text-2xl font-semibold text-[color:var(--foreground)]"
+                >
+                  {option.title}
+                </h3>
+                <p className="mt-4 max-w-xl text-sm leading-7 text-[color:var(--muted)]">
+                  {option.description}
+                </p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {placeholderCardsByMediaType[option.label].map((card) => (
+                  <MediaCardRenderer key={card.type + "-" + card.title} card={card} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function Home() {
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
       <Navbar navItems={navItems} ctaText="Browse" />
@@ -186,63 +239,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        id="options"
-        className="border-b border-[color:var(--border)] bg-[color:var(--background)]"
-      >
-        <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
-          <div className="max-w-3xl">
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
-              Options
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
-              Browse by books, shows, movies, or games.
-            </h2>
-          </div>
-
-          <div className="mt-12 divide-y divide-[color:var(--border)] border-y border-[color:var(--border)]">
-            {mediaOptions.map((option) => (
-              <section
-                key={option.label}
-                aria-labelledby={`${option.label.toLowerCase()}-heading`}
-                className="grid gap-8 py-10 lg:grid-cols-[0.8fr_1.2fr]"
-              >
-                <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--accent)]">
-                    {option.label}
-                  </p>
-                  <h3
-                    id={`${option.label.toLowerCase()}-heading`}
-                    className="mt-3 text-2xl font-semibold text-[color:var(--foreground)]"
-                  >
-                    {option.title}
-                  </h3>
-                  <p className="mt-4 max-w-xl text-sm leading-7 text-[color:var(--muted)]">
-                    {option.description}
-                  </p>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {placeholderCardsByMediaType[option.label].map((card) => (
-                    <MediaCardRenderer key={card.type + "-" + card.title} card={card} />
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <button
-        type="button"
-        onClick={toggleTheme}
-        className="fixed bottom-4 right-4 z-50 rounded-full border border-[color:var(--border)] bg-[color:var(--nav-bg)] px-4 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-lg backdrop-blur-sm transition hover:bg-[color:var(--accent-soft)]"
-        aria-label={
-          theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-        }
-        aria-pressed={theme === "light"}
-      >
-        {theme === "dark" ? "Light" : "Dark"}
-      </button>
+      <Suspense fallback={<MediaSectionsSkeleton />}>
+        <MediaSections />
+      </Suspense>
     </main>
   );
 }
