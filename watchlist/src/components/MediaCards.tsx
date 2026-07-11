@@ -94,7 +94,7 @@ function MediaCard({
       aria-label={cardLabel}
       className={`group grid h-full overflow-hidden rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--border-strong)] hover:bg-[color:var(--panel)] ${className}`}
     >
-      <div className="aspect-[4/3] overflow-hidden border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]">
+      <div className="aspect-[2/1] overflow-hidden border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]">
         {imageUrl ? (
           <div
             role="img"
