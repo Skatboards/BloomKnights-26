@@ -95,7 +95,7 @@ export default function Home() {
           <div className="flex shrink-0 items-center gap-6">
             <a
               href="#top"
-              className="shrink-0 text-base font-semibold tracking-wide text-[color:var(--foreground)]"
+              className="shrink-0 rounded-md px-3 py-2 text-base font-semibold tracking-wide text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)]"
             >
               WatchList
             </a>
@@ -104,7 +104,7 @@ export default function Home() {
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="rounded px-3 py-2 text-sm text-[color:var(--muted)] transition hover:bg-[color:var(--surface-strong)] hover:text-[color:var(--foreground)]"
+                  className="rounded px-3 py-2 text-sm text-[color:var(--muted)] transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]"
                 >
                   {item}
                 </a>
@@ -119,12 +119,12 @@ export default function Home() {
               id="site-search"
               type="search"
               placeholder="Search..."
-              className="h-10 w-full rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] px-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--border-strong)] focus:bg-[color:var(--surface-strong)]"
+              className="h-10 w-full rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] px-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--accent)] focus:bg-[color:var(--accent-soft)]"
             />
           </div>
           <a
             href="#overview"
-            className="ml-auto shrink-0 rounded-md bg-[color:var(--foreground)] px-4 py-2 text-sm font-medium text-[color:var(--background)] transition hover:bg-[color:var(--muted-strong)]"
+            className="ml-auto shrink-0 rounded-md bg-[color:var(--foreground)] px-4 py-2 text-sm font-medium text-[color:var(--background)] transition hover:bg-[color:var(--accent)]"
           >
             Launch
           </a>
