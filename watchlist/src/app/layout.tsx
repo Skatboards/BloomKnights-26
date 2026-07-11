@@ -26,7 +26,7 @@ const themeBootstrap = `
     document.documentElement.dataset.theme = theme;
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
-      meta.setAttribute('content', theme === 'dark' ? '#2a2f2a' : '#f4f4f5');
+      meta.setAttribute('content', theme === 'dark' ? '#121722' : '#f7f8fa');
     }
   } catch (error) {
     document.documentElement.dataset.theme = 'dark';
@@ -47,7 +47,7 @@ export default function RootLayout({
     >
       <head>
         <meta name="color-scheme" content="light dark" />
-        <meta name="theme-color" content="#2a2f2a" />
+        <meta name="theme-color" content="#121722" />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>

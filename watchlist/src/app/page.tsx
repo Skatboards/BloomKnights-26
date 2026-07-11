@@ -91,7 +91,7 @@ function applyTheme(theme: Theme) {
   if (themeColor) {
     themeColor.setAttribute(
       "content",
-      theme === "dark" ? "#2a2f2a" : "#f4f4f5",
+      theme === "dark" ? "#121722" : "#f7f8fa",
     );
   }
 
