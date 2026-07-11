@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import Navbar from "@/components/Navbar";
 
-const navItems = ["Overview", "Workspace", "Activity", "Settings"];
+const navItems = ["Home", "Shows", "Movies", "Books", "Games"];
 
 const stats = [
   { label: "Active projects", value: "24" },
@@ -108,16 +108,16 @@ export default function Home() {
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#workspace"
+                href="#top"
                 className="rounded-md bg-[color:var(--accent)] px-5 py-3 text-center text-sm font-semibold text-[color:var(--accent-foreground)] transition hover:opacity-90"
               >
-                View workspace
+                View home
               </a>
               <a
-                href="#activity"
+                href="#top"
                 className="rounded-md border border-[color:var(--border-strong)] px-5 py-3 text-center text-sm font-semibold text-[color:var(--foreground)] transition hover:bg-[color:var(--surface)]"
               >
-                Recent activity
+                Latest picks
               </a>
             </div>
           </div>
@@ -162,13 +162,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="overview" className="border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]">
+      <section id="home" className="border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]">
         <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
           <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                Overview
-              </p>
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Home</p>
               <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
                 Everything important stays in view.
               </h2>
@@ -191,12 +189,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="workspace" className="border-b border-[color:var(--border)] bg-[color:var(--background)]">
+      <section id="collection" className="border-b border-[color:var(--border)] bg-[color:var(--background)]">
         <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-20 sm:px-8 lg:grid-cols-3 lg:px-10">
           <div className="lg:col-span-1">
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
-              Workspace
-            </p>
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Collection</p>
             <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)]">
               Built for scrolling, scanning, and focus.
             </h2>
@@ -222,9 +218,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="activity" className="border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]">
+      <section id="updates" className="border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]">
         <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Activity</p>
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Updates</p>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {["New update", "Team note", "System event"].map((item) => (
               <article
@@ -242,9 +238,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="settings" className="bg-[color:var(--background)]">
+      <section id="preferences" className="bg-[color:var(--background)]">
         <div className="mx-auto flex min-h-96 w-full max-w-7xl flex-col justify-center px-5 py-20 sm:px-8 lg:px-10">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Settings</p>
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Preferences</p>
           <h2 className="mt-4 max-w-3xl text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
             A simple final band keeps the page continuous and ready to expand.
           </h2>

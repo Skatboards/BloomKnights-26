@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 interface NavbarProps {
   navItems?: string[];
@@ -8,10 +9,10 @@ interface NavbarProps {
 }
 
 export default function Navbar({
-  navItems = ["Overview", "Workspace", "Activity", "Settings"],
+  navItems = ["Home", "Shows", "Movies", "Books", "Games"],
   brandName = "WatchList",
   ctaText = "Launch",
-  ctaHref = "#overview",
+  ctaHref = "/",
 }: NavbarProps) {
   return (
     <nav className="sticky top-0 z-50 border-b border-[color:var(--border)] bg-[color:var(--nav-bg)] backdrop-blur-xl">
@@ -25,15 +26,26 @@ export default function Navbar({
           </a>
 
           <div className="hidden items-center gap-1 rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] p-1 md:flex">
-            {navItems.map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="rounded px-3 py-2 text-sm text-[color:var(--muted)] transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]"
-              >
-                {item}
-              </a>
-            ))}
+            {navItems.map((item) =>
+              item === "Home" ? (
+                <Link
+                  key={item}
+                  href="/"
+                  className="rounded px-3 py-2 text-sm text-[color:var(--muted)] transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]"
+                >
+                  {item}
+                </Link>
+              ) : (
+                <button
+                  key={item}
+                  type="button"
+                  aria-disabled="true"
+                  className="cursor-default rounded px-3 py-2 text-sm text-[color:var(--muted)] transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]"
+                >
+                  {item}
+                </button>
+              ),
+            )}
           </div>
         </div>
 
