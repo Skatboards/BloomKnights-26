@@ -232,20 +232,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="preferences" className="bg-[color:var(--background)]">
-        <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-20 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
-              Next Steps
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
-              Ready for real recommendations when the content is available.
-            </h2>
-          </div>
-          <GameCard {...featuredMedia.game} className="mx-auto w-full max-w-md lg:ml-auto" />
-        </div>
-      </section>
-
       <button
         type="button"
         onClick={toggleTheme}
