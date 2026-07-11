@@ -1,5 +1,6 @@
 import Link from "next/link";
 import NavbarMenu from "@/components/NavbarMenu";
+import NavbarSearch from "@/components/NavbarSearch";
 
 interface NavbarProps {
   navItems?: string[];
@@ -46,15 +47,7 @@ export default function Navbar({
         </div>
 
         <div className="hidden min-w-0 flex-1 lg:block">
-          <label className="sr-only" htmlFor="site-search">
-            Search
-          </label>
-          <input
-            id="site-search"
-            type="search"
-            placeholder="Search..."
-            className="h-10 w-full rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] px-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)]"
-          />
+          <NavbarSearch />
         </div>
 
         <NavbarMenu initialUser={null} />

@@ -11,6 +11,10 @@ type NavbarMenuProps = {
 const themeStorageKey = "watchlist-theme";
 
 function getStoredTheme(): Theme {
+  if (typeof window === "undefined") {
+    return "dark";
+  }
+
   const activeTheme = document.documentElement.dataset.theme;
   if (activeTheme === "light" || activeTheme === "dark") {
     return activeTheme;
@@ -44,14 +48,10 @@ export default function NavbarMenu({ initialUser = null }: NavbarMenuProps) {
   const authHref = isSignedIn ? "/account" : "/auth";
   const authLabel = isSignedIn ? "Account" : "Login / Sign up";
   const [isOpen, setIsOpen] = useState(false);
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>(getStoredTheme);
   const menuRef = useRef<HTMLDivElement>(null);
   const nextTheme = theme === "dark" ? "light" : "dark";
   const isLightTheme = theme === "light";
-
-  useEffect(() => {
-    setTheme(getStoredTheme());
-  }, []);
 
   useEffect(() => {
     if (!isOpen) {
