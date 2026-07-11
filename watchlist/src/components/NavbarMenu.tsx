@@ -88,7 +88,7 @@ export default function NavbarMenu({ initialUser = null }: NavbarMenuProps) {
     <div ref={menuRef} className="relative ml-auto shrink-0">
       <button
         type="button"
-        className="flex h-10 w-10 items-center justify-center rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)] focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]"
+        className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)] focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]"
         aria-label={isOpen ? "Close menu" : "Open menu"}
         aria-expanded={isOpen}
         aria-haspopup="menu"
@@ -109,20 +109,20 @@ export default function NavbarMenu({ initialUser = null }: NavbarMenuProps) {
         >
           <a
             href={authHref}
-            className="block px-4 py-2 font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)]"
+            className="block cursor-pointer px-4 py-2 font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)]"
             role="menuitem"
             onClick={() => setIsOpen(false)}
           >
             {authLabel}
           </a>
           <div
-            className="flex items-center justify-between gap-4 px-4 py-2 text-[color:var(--foreground)]"
+            className="flex items-center justify-between gap-4 px-4 py-2 text-[color:var(--foreground)] hover:bg-[color:var(--accent-soft)]"
             role="menuitem"
           >
             <span className="font-medium">Theme</span>
             <button
               type="button"
-              className={`relative h-6 w-11 rounded-full border border-[color:var(--border)] transition focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] ${
+              className={`relative h-6 w-11 cursor-pointer rounded-full border focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] ${
                 isLightTheme
                   ? "bg-[color:var(--accent)]"
                   : "bg-[color:var(--surface)]"
@@ -142,7 +142,7 @@ export default function NavbarMenu({ initialUser = null }: NavbarMenuProps) {
           </div>
           <button
             type="button"
-            className="block w-full px-4 py-2 text-left font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)]"
+            className="block w-full cursor-pointer px-4 py-2 text-left font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)]"
             role="menuitem"
             onClick={() => setIsOpen(false)}
           >

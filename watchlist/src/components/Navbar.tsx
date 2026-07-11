@@ -24,7 +24,7 @@ export default function Navbar({
         <div className="flex shrink-0 items-center gap-6">
           <a
             href="#top"
-            className="shrink-0 rounded-md px-3 py-2 text-base font-semibold tracking-wide text-[color:var(--foreground)] transition hover:bg-[color:var(--accent)]"
+            className="shrink-0 cursor-pointer rounded-md px-3 py-2 text-base font-semibold tracking-wide text-[color:var(--foreground)] transition hover:bg-[color:var(--accent)]"
           >
             {brandName}
           </a>
@@ -32,7 +32,7 @@ export default function Navbar({
           <div className="hidden items-center gap-1 rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] p-1 md:flex">
             {navItems.map((item) => {
               const isActive = item === activeItem;
-              const navClassName = `rounded px-3 py-2 text-sm transition ${
+              const navClassName = `cursor-pointer rounded px-3 py-2 text-sm transition ${
                 isActive ? activeNavClass : inactiveNavClass
               }`;
 
@@ -51,7 +51,7 @@ export default function Navbar({
                   type="button"
                   aria-current={isActive ? "page" : undefined}
                   aria-disabled="true"
-                  className={`cursor-default ${navClassName}`}
+                  className={navClassName}
                 >
                   {item}
                 </button>
