@@ -1,5 +1,3 @@
-import React from "react";
-
 type MediaTone = "movie" | "show" | "book" | "game";
 
 type MetaItem = {

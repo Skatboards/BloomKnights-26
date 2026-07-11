@@ -2,45 +2,42 @@
 
 import { useSyncExternalStore } from "react";
 import Navbar from "@/components/Navbar";
+import { BookCard, GameCard, MovieCard, ShowCard } from "@/components/MediaCards";
+import { featuredMedia, placeholderCardsByMediaType, type PlaceholderMediaCard } from "@/data/placeholderMedia";
 
 const navItems = ["Home", "Shows", "Movies", "Books", "Games"];
 
-const mediaOptions = [
+type MediaOption = {
+  label: keyof typeof placeholderCardsByMediaType;
+  title: string;
+  description: string;
+};
+
+const mediaOptions: MediaOption[] = [
   {
     label: "Books",
     title: "Reading lists for every pace",
     description:
       "Collect novels, essays, graphic novels, reference titles, and rereads in one place.",
-    examples: ["Fiction", "Nonfiction", "Comics", "Reference"],
   },
   {
     label: "Shows",
     title: "Series worth returning to",
     description:
       "Track limited series, long-running favorites, anime, documentaries, and comfort watches.",
-    examples: ["Drama", "Comedy", "Anime", "Documentary"],
   },
   {
     label: "Movies",
     title: "A watchlist for any mood",
     description:
       "Save new releases, classics, festival picks, family nights, and late-night discoveries.",
-    examples: ["Classics", "Action", "Indie", "Family"],
   },
   {
     label: "Games",
     title: "Play queues that stay organized",
     description:
       "Keep tabs on campaign games, co-op nights, tabletop sessions, and quick casual picks.",
-    examples: ["RPG", "Co-op", "Tabletop", "Puzzle"],
   },
-];
-
-const placeholderGroups = [
-  "Featured shelf",
-  "Recently added",
-  "Top picks",
-  "Coming soon",
 ];
 
 type Theme = "light" | "dark";
@@ -101,14 +98,20 @@ function applyTheme(theme: Theme) {
   window.dispatchEvent(new Event(themeChangeEvent));
 }
 
-function Placeholder({ label, tall = false }: { label: string; tall?: boolean }) {
-  return (
-    <div
-      className={`flex ${tall ? "min-h-72" : "min-h-36"} items-center justify-center rounded-md border border-dashed border-[color:var(--border-strong)] bg-[color:var(--surface)] px-4 text-center text-sm font-medium text-[color:var(--muted)]`}
-    >
-      {label} placeholder
-    </div>
-  );
+function MediaCardRenderer({ card }: { card: PlaceholderMediaCard }) {
+  if (card.type === "book") {
+    return <BookCard {...card} />;
+  }
+
+  if (card.type === "show") {
+    return <ShowCard {...card} />;
+  }
+
+  if (card.type === "movie") {
+    return <MovieCard {...card} />;
+  }
+
+  return <GameCard {...card} />;
 }
 
 export default function Home() {
@@ -139,27 +142,21 @@ export default function Home() {
               One place to plan what you read, watch, and play next.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[color:var(--muted)]">
-              WatchList gives the home page a simple overview of books, shows,
-              movies, and games so every kind of recommendation has a clear
-              place to land.
+              WatchList gives a simple overview of books, shows, 
+              movies, and games so you can plan and share what
+              you&apos;re watching.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
                 href="#options"
                 className="rounded-md bg-[color:var(--accent)] px-5 py-3 text-center text-sm font-semibold text-[color:var(--accent-foreground)] transition hover:opacity-90"
               >
-                Explore options
-              </a>
-              <a
-                href="#placeholders"
-                className="rounded-md border border-[color:var(--border-strong)] px-5 py-3 text-center text-sm font-semibold text-[color:var(--foreground)] transition hover:bg-[color:var(--surface)]"
-              >
-                View placeholders
+                Explore media
               </a>
             </div>
           </div>
 
-          <Placeholder label="Home overview visual" tall />
+          <MovieCard {...featuredMedia.movie} className="mx-auto w-full max-w-md lg:ml-auto" />
         </div>
       </section>
 
@@ -178,13 +175,12 @@ export default function Home() {
           </div>
           <div className="space-y-5 text-base leading-8 text-[color:var(--muted)]">
             <p>
-              Use the site as a lightweight media hub: add titles, sort them by
+              A place to store media: add titles, sort them by
               format, and keep a clean path from discovery to finished.
             </p>
             <p>
-              The home page now leaves room for future art, screenshots,
-              recommendations, and collection previews without relying on the
-              old dashboard visuals.
+              Find new media to share and recommend to friends. If you find
+              something you like, add it to your own WatchList !
             </p>
           </div>
         </div>
@@ -226,35 +222,12 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {option.examples.map((example) => (
-                    <Placeholder key={example} label={example} />
+                  {placeholderCardsByMediaType[option.label].map((card) => (
+                    <MediaCardRenderer key={card.type + "-" + card.title} card={card} />
                   ))}
                 </div>
               </section>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="placeholders"
-        className="border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]"
-      >
-        <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
-          <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr]">
-            <div>
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                Placeholder Areas
-              </p>
-              <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
-                Simple spaces for future media.
-              </h2>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {placeholderGroups.map((group) => (
-                <Placeholder key={group} label={group} tall />
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -269,7 +242,7 @@ export default function Home() {
               Ready for real recommendations when the content is available.
             </h2>
           </div>
-          <Placeholder label="Footer feature" tall />
+          <GameCard {...featuredMedia.game} className="mx-auto w-full max-w-md lg:ml-auto" />
         </div>
       </section>
 
