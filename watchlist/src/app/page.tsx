@@ -5,19 +5,42 @@ import Navbar from "@/components/Navbar";
 
 const navItems = ["Home", "Shows", "Movies", "Books", "Games"];
 
-const stats = [
-  { label: "Active projects", value: "24" },
-  { label: "Open tasks", value: "138" },
-  { label: "Team members", value: "16" },
+const mediaOptions = [
+  {
+    label: "Books",
+    title: "Reading lists for every pace",
+    description:
+      "Collect novels, essays, graphic novels, reference titles, and rereads in one place.",
+    examples: ["Fiction", "Nonfiction", "Comics", "Reference"],
+  },
+  {
+    label: "Shows",
+    title: "Series worth returning to",
+    description:
+      "Track limited series, long-running favorites, anime, documentaries, and comfort watches.",
+    examples: ["Drama", "Comedy", "Anime", "Documentary"],
+  },
+  {
+    label: "Movies",
+    title: "A watchlist for any mood",
+    description:
+      "Save new releases, classics, festival picks, family nights, and late-night discoveries.",
+    examples: ["Classics", "Action", "Indie", "Family"],
+  },
+  {
+    label: "Games",
+    title: "Play queues that stay organized",
+    description:
+      "Keep tabs on campaign games, co-op nights, tabletop sessions, and quick casual picks.",
+    examples: ["RPG", "Co-op", "Tabletop", "Puzzle"],
+  },
 ];
 
-const features = [
-  "Unified dashboard",
-  "Shared timelines",
-  "Priority tracking",
-  "Insight reports",
-  "Role controls",
-  "Fast search",
+const placeholderGroups = [
+  "Featured shelf",
+  "Recently added",
+  "Top picks",
+  "Coming soon",
 ];
 
 type Theme = "light" | "dark";
@@ -78,6 +101,16 @@ function applyTheme(theme: Theme) {
   window.dispatchEvent(new Event(themeChangeEvent));
 }
 
+function Placeholder({ label, tall = false }: { label: string; tall?: boolean }) {
+  return (
+    <div
+      className={`flex ${tall ? "min-h-72" : "min-h-36"} items-center justify-center rounded-md border border-dashed border-[color:var(--border-strong)] bg-[color:var(--surface)] px-4 text-center text-sm font-medium text-[color:var(--muted)]`}
+    >
+      {label} placeholder
+    </div>
+  );
+}
+
 export default function Home() {
   const theme = useSyncExternalStore(
     subscribeToTheme,
@@ -91,159 +124,152 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <Navbar navItems={navItems} />
+      <Navbar navItems={navItems} ctaText="Browse" />
 
-      <section id="top" className="border-b border-[color:var(--border)] bg-[color:var(--background)]">
-        <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-7xl items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
+      <section
+        id="top"
+        className="border-b border-[color:var(--border)] bg-[color:var(--background)]"
+      >
+        <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-7xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
           <div className="max-w-3xl">
             <p className="mb-5 text-sm font-medium uppercase tracking-[0.24em] text-[color:var(--accent)]">
-              Operations Console
+              WatchList Home
             </p>
             <h1 className="text-5xl font-semibold leading-tight text-[color:var(--foreground)] sm:text-6xl lg:text-7xl">
-              A calm command center for everyday work.
+              One place to plan what you read, watch, and play next.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[color:var(--muted)]">
-              Track priorities, surface activity, and keep moving through a
-              focused interface designed for a general-purpose web app.
+              WatchList gives the home page a simple overview of books, shows,
+              movies, and games so every kind of recommendation has a clear
+              place to land.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#top"
+                href="#options"
                 className="rounded-md bg-[color:var(--accent)] px-5 py-3 text-center text-sm font-semibold text-[color:var(--accent-foreground)] transition hover:opacity-90"
               >
-                View home
+                Explore options
               </a>
               <a
-                href="#top"
+                href="#placeholders"
                 className="rounded-md border border-[color:var(--border-strong)] px-5 py-3 text-center text-sm font-semibold text-[color:var(--foreground)] transition hover:bg-[color:var(--surface)]"
               >
-                Latest picks
+                View placeholders
               </a>
             </div>
           </div>
 
-          <div className="grid gap-4 rounded-lg border border-[color:var(--border)] bg-[color:var(--surface)] p-4 shadow-2xl shadow-black/25">
-            <div className="rounded-md border border-[color:var(--border)] bg-[color:var(--surface-strong)] p-5">
-              <div className="mb-5 flex items-center justify-between">
-                <span className="text-sm font-medium text-[color:var(--muted)]">
-                  Today
-                </span>
-                <span className="rounded bg-[color:var(--live-bg)] px-2 py-1 text-xs font-medium text-[color:var(--live-fg)]">
-                  Live
-                </span>
-              </div>
-              <div className="space-y-3">
-                {[72, 46, 88, 64].map((width, index) => (
-                  <div key={width} className="rounded-md bg-[color:var(--surface)] p-3">
-                    <div className="mb-3 h-2 w-24 rounded bg-[color:var(--panel)]" />
-                    <div
-                      className="h-2 rounded"
-                      style={{ width: `${width}%`, backgroundColor: "var(--accent)" }}
-                    />
-                    <p className="mt-3 text-sm text-[color:var(--muted)]">Queue {index + 1}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-md border border-[color:var(--border)] bg-[color:var(--surface-strong)] p-4"
-                >
-                  <p className="text-2xl font-semibold text-[color:var(--foreground)]">{stat.value}</p>
-                  <p className="mt-1 text-xs leading-5 text-[color:var(--muted)]">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
-            </div>
+          <Placeholder label="Home overview visual" tall />
+        </div>
+      </section>
+
+      <section
+        id="home"
+        className="border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]"
+      >
+        <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-20 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-10">
+          <div>
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
+              Site Overview
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
+              A shared shelf for entertainment choices.
+            </h2>
+          </div>
+          <div className="space-y-5 text-base leading-8 text-[color:var(--muted)]">
+            <p>
+              Use the site as a lightweight media hub: add titles, sort them by
+              format, and keep a clean path from discovery to finished.
+            </p>
+            <p>
+              The home page now leaves room for future art, screenshots,
+              recommendations, and collection previews without relying on the
+              old dashboard visuals.
+            </p>
           </div>
         </div>
       </section>
 
-      <section id="home" className="border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]">
+      <section
+        id="options"
+        className="border-b border-[color:var(--border)] bg-[color:var(--background)]"
+      >
         <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
-          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="max-w-3xl">
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
+              Options
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
+              Browse by books, shows, movies, or games.
+            </h2>
+          </div>
+
+          <div className="mt-12 divide-y divide-[color:var(--border)] border-y border-[color:var(--border)]">
+            {mediaOptions.map((option) => (
+              <section
+                key={option.label}
+                aria-labelledby={`${option.label.toLowerCase()}-heading`}
+                className="grid gap-8 py-10 lg:grid-cols-[0.8fr_1.2fr]"
+              >
+                <div>
+                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--accent)]">
+                    {option.label}
+                  </p>
+                  <h3
+                    id={`${option.label.toLowerCase()}-heading`}
+                    className="mt-3 text-2xl font-semibold text-[color:var(--foreground)]"
+                  >
+                    {option.title}
+                  </h3>
+                  <p className="mt-4 max-w-xl text-sm leading-7 text-[color:var(--muted)]">
+                    {option.description}
+                  </p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {option.examples.map((example) => (
+                    <Placeholder key={example} label={example} />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="placeholders"
+        className="border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]"
+      >
+        <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
+          <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr]">
             <div>
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Home</p>
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                Placeholder Areas
+              </p>
               <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
-                Everything important stays in view.
+                Simple spaces for future media.
               </h2>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              {features.map((feature) => (
-                <div
-                  key={feature}
-                  className="rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] p-5"
-                >
-                  <div className="mb-6 h-8 w-8 rounded bg-[color:var(--accent-soft)]" />
-                  <h3 className="font-medium text-[color:var(--foreground)]">{feature}</h3>
-                  <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-                    Flexible placeholder content for a polished application front page.
-                  </p>
-                </div>
+              {placeholderGroups.map((group) => (
+                <Placeholder key={group} label={group} tall />
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="collection" className="border-b border-[color:var(--border)] bg-[color:var(--background)]">
-        <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-20 sm:px-8 lg:grid-cols-3 lg:px-10">
-          <div className="lg:col-span-1">
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Collection</p>
-            <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)]">
-              Built for scrolling, scanning, and focus.
-            </h2>
-          </div>
-          <div className="space-y-4 lg:col-span-2">
-            {["Planning", "Execution", "Review"].map((item) => (
-              <div
-                key={item}
-                className="rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] p-5"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="text-lg font-medium text-[color:var(--foreground)]">{item}</h3>
-                  <span className="text-sm text-[color:var(--muted)]">0{item.length}</span>
-                </div>
-                <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                  <div className="h-24 rounded bg-[color:var(--surface-strong)]" />
-                  <div className="h-24 rounded bg-[color:var(--surface-strong)]" />
-                  <div className="h-24 rounded bg-[color:var(--surface-strong)]" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="updates" className="border-b border-[color:var(--border)] bg-[color:var(--surface-strong)]">
-        <div className="mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 lg:px-10">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Updates</p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {["New update", "Team note", "System event"].map((item) => (
-              <article
-                key={item}
-                className="rounded-md border border-[color:var(--border)] bg-[color:var(--background)] p-6"
-              >
-                <p className="text-sm text-[color:var(--accent)]">Just now</p>
-                <h3 className="mt-3 text-xl font-semibold text-[color:var(--foreground)]">{item}</h3>
-                <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
-                  A compact feed item that keeps the front page feeling active without adding another route.
-                </p>
-              </article>
-            ))}
           </div>
         </div>
       </section>
 
       <section id="preferences" className="bg-[color:var(--background)]">
-        <div className="mx-auto flex min-h-96 w-full max-w-7xl flex-col justify-center px-5 py-20 sm:px-8 lg:px-10">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">Preferences</p>
-          <h2 className="mt-4 max-w-3xl text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
-            A simple final band keeps the page continuous and ready to expand.
-          </h2>
+        <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-20 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
+          <div>
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
+              Next Steps
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
+              Ready for real recommendations when the content is available.
+            </h2>
+          </div>
+          <Placeholder label="Footer feature" tall />
         </div>
       </section>
 
@@ -251,7 +277,9 @@ export default function Home() {
         type="button"
         onClick={toggleTheme}
         className="fixed bottom-4 right-4 z-50 rounded-full border border-[color:var(--border)] bg-[color:var(--nav-bg)] px-4 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-lg backdrop-blur-sm transition hover:bg-[color:var(--accent-soft)]"
-        aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+        aria-label={
+          theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+        }
         aria-pressed={theme === "light"}
       >
         {theme === "dark" ? "Light" : "Dark"}
