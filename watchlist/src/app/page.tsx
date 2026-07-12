@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import { BookCard, GameCard, MovieCard, ShowCard } from "@/components/MediaCards";
 import { featuredMedia, placeholderCardsByMediaType, type PlaceholderMediaCard } from "@/data/placeholderMedia";
 
-const navItems = ["Home", "Shows", "Movies", "Books", "Games"];
+const navItems = ["Home", "Shows", "Movies", "Books", "Games", "Add"];
 
 type MediaOption = {
   label: keyof typeof placeholderCardsByMediaType;

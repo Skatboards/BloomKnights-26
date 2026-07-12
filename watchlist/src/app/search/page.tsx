@@ -1,7 +1,10 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import SearchResultsPage from "@/components/SearchResultsPage";
-import { allPlaceholderMediaCards } from "@/data/placeholderMedia";
+import { getAllMediaCards } from "@/lib/mediaDb";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Search | WatchList",
@@ -21,7 +24,7 @@ function SearchFallback() {
 export default function SearchPage() {
   return (
     <Suspense fallback={<SearchFallback />}>
-      <SearchResultsPage cards={allPlaceholderMediaCards} />
+      <SearchResultsPage cards={getAllMediaCards()} />
     </Suspense>
   );
 }

@@ -13,7 +13,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({
-  navItems = ["Home", "Shows", "Movies", "Books", "Games"],
+  navItems = ["Home", "Shows", "Movies", "Books", "Games", "Add"],
   brandName = "WatchList",
   activeItem = "Home",
   searchValue,
@@ -27,6 +27,7 @@ export default function Navbar({
     Movies: "/movies",
     Books: "/books",
     Games: "/games",
+    Add: "/add",
   };
   const activeNavClass =
     "bg-[color:var(--accent)] text-[color:var(--accent-foreground)]";
