@@ -1,3 +1,5 @@
+"use client";
+
 type MediaTone = "movie" | "show" | "book" | "game";
 
 type MetaItem = {

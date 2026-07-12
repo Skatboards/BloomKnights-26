@@ -3,6 +3,13 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
+type NavbarSearchProps = {
+  value?: string;
+  onChange?: (value: string) => void;
+  onSubmit?: (query: string) => void;
+  hint?: string;
+};
+
 const suggestionDelayMs = 600;
 
 function SuggestionSkeleton() {
@@ -15,12 +22,18 @@ function SuggestionSkeleton() {
   );
 }
 
-export default function NavbarSearch() {
+export default function NavbarSearch({
+  value,
+  onChange,
+  onSubmit,
+  hint = "Press Enter for global results.",
+}: NavbarSearchProps) {
   const router = useRouter();
-  const [query, setQuery] = useState("");
+  const [internalQuery, setInternalQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [resolvedQuery, setResolvedQuery] = useState("");
   const searchRef = useRef<HTMLFormElement>(null);
+  const query = value ?? internalQuery;
   const trimmedQuery = query.trim();
   const showSuggestions = isFocused && trimmedQuery.length > 0;
   const isLoading = showSuggestions && resolvedQuery !== trimmedQuery;
@@ -60,6 +73,15 @@ export default function NavbarSearch() {
     };
   }, []);
 
+  const updateQuery = (nextQuery: string) => {
+    if (onChange) {
+      onChange(nextQuery);
+      return;
+    }
+
+    setInternalQuery(nextQuery);
+  };
+
   const submitSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -68,6 +90,12 @@ export default function NavbarSearch() {
     }
 
     setIsFocused(false);
+
+    if (onSubmit) {
+      onSubmit(trimmedQuery);
+      return;
+    }
+
     router.push(`/search?q=${encodeURIComponent(trimmedQuery)}`);
   };
 
@@ -83,7 +111,7 @@ export default function NavbarSearch() {
         placeholder="Search..."
         autoComplete="off"
         className="h-10 w-full rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] px-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--border-strong)] focus:ring-2 focus:ring-[color:var(--accent)]"
-        onChange={(event) => setQuery(event.target.value)}
+        onChange={(event) => updateQuery(event.target.value)}
         onFocus={() => setIsFocused(true)}
       />
 
@@ -93,7 +121,7 @@ export default function NavbarSearch() {
             <SuggestionSkeleton />
           ) : hasSearched ? (
             <div className="px-3 py-3 text-[color:var(--muted)]">
-              Suggestions will appear here when search data is connected.
+              {hint}
             </div>
           ) : null}
         </div>

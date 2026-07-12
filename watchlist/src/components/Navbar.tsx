@@ -6,12 +6,20 @@ interface NavbarProps {
   navItems?: string[];
   brandName?: string;
   activeItem?: string;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  onSearchSubmit?: (query: string) => void;
+  searchHint?: string;
 }
 
 export default function Navbar({
   navItems = ["Home", "Shows", "Movies", "Books", "Games"],
   brandName = "WatchList",
   activeItem = "Home",
+  searchValue,
+  onSearchChange,
+  onSearchSubmit,
+  searchHint,
 }: NavbarProps) {
   const navHrefs: Record<string, string> = {
     Home: "/",
@@ -59,7 +67,12 @@ export default function Navbar({
         </div>
 
         <div className="hidden min-w-0 flex-1 lg:block">
-          <NavbarSearch />
+          <NavbarSearch
+            value={searchValue}
+            onChange={onSearchChange}
+            onSubmit={onSearchSubmit}
+            hint={searchHint}
+          />
         </div>
 
         <NavbarMenu initialUser={null} />
