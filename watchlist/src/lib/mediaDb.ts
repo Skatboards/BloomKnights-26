@@ -1,7 +1,10 @@
-import { mkdirSync } from "node:fs";
-import path from "node:path";
 import Database from "better-sqlite3";
 import { placeholderCardsByMediaType, type PlaceholderMediaCard } from "@/data/placeholderMedia";
+import {
+  openWatchlistDatabase,
+  resetWatchlistDatabaseForTests,
+  shouldSeedDemoData,
+} from "@/lib/db/bootstrap";
 
 type MediaType = "book" | "show" | "movie" | "game";
 
@@ -62,23 +65,21 @@ const mediaTypeByLabel = {
   Games: "game",
 } satisfies Record<string, MediaType>;
 
-let cachedDb: Database.Database | null = null;
 let initialized = false;
 
 function getDb() {
-  if (!cachedDb) {
-    const dbDir = path.join(process.cwd(), "data");
-    mkdirSync(dbDir, { recursive: true });
-    cachedDb = new Database(path.join(dbDir, "watchlist.sqlite"));
-  }
+  const db = openWatchlistDatabase();
 
   if (!initialized) {
     initialized = true;
-    createSchema(cachedDb);
-    seedPlaceholderMedia(cachedDb);
+    createSchema(db);
+
+    if (shouldSeedDemoData()) {
+      seedPlaceholderMedia(db);
+    }
   }
 
-  return cachedDb;
+  return db;
 }
 
 function createSchema(db: Database.Database) {
@@ -229,49 +230,53 @@ function optionalValue(value: FormDataEntryValue | string | undefined | null) {
 }
 
 function insertMediaItem(db: Database.Database, item: MediaItemInput) {
-  const result = db.prepare(`
-    INSERT INTO media_items (
-      media_type, title, subtitle, description, provider, status, image_url, image_alt,
-      runtime, rating, release_year, seasons, episode_count, network, author, page_count,
-      isbn, platform, studio, playtime, tags_json, meta_json
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(
-    item.type,
-    item.title,
-    optionalValue(item.subtitle) ?? null,
-    item.description,
-    optionalValue(item.provider) ?? null,
-    optionalValue(item.status) ?? "Saved",
-    optionalValue(item.imageUrl) ?? null,
-    optionalValue(item.imageAlt) ?? null,
-    optionalValue(item.runtime) ?? null,
-    optionalValue(item.rating) ?? null,
-    optionalValue(item.releaseYear) ?? null,
-    optionalValue(item.seasons) ?? null,
-    optionalValue(item.episodeCount) ?? null,
-    optionalValue(item.network) ?? null,
-    optionalValue(item.author) ?? null,
-    optionalValue(item.pageCount) ?? null,
-    optionalValue(item.isbn) ?? null,
-    optionalValue(item.platform) ?? null,
-    optionalValue(item.studio) ?? null,
-    optionalValue(item.playtime) ?? null,
-    JSON.stringify(item.tags ?? []),
-    JSON.stringify([]),
-  );
+  const insert = db.transaction((nextItem: MediaItemInput) => {
+    const result = db.prepare(`
+      INSERT INTO media_items (
+        media_type, title, subtitle, description, provider, status, image_url, image_alt,
+        runtime, rating, release_year, seasons, episode_count, network, author, page_count,
+        isbn, platform, studio, playtime, tags_json, meta_json
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      nextItem.type,
+      nextItem.title,
+      optionalValue(nextItem.subtitle) ?? null,
+      nextItem.description,
+      optionalValue(nextItem.provider) ?? null,
+      optionalValue(nextItem.status) ?? "Saved",
+      optionalValue(nextItem.imageUrl) ?? null,
+      optionalValue(nextItem.imageAlt) ?? null,
+      optionalValue(nextItem.runtime) ?? null,
+      optionalValue(nextItem.rating) ?? null,
+      optionalValue(nextItem.releaseYear) ?? null,
+      optionalValue(nextItem.seasons) ?? null,
+      optionalValue(nextItem.episodeCount) ?? null,
+      optionalValue(nextItem.network) ?? null,
+      optionalValue(nextItem.author) ?? null,
+      optionalValue(nextItem.pageCount) ?? null,
+      optionalValue(nextItem.isbn) ?? null,
+      optionalValue(nextItem.platform) ?? null,
+      optionalValue(nextItem.studio) ?? null,
+      optionalValue(nextItem.playtime) ?? null,
+      JSON.stringify(nextItem.tags ?? []),
+      JSON.stringify([]),
+    );
 
-  const mediaItemId = Number(result.lastInsertRowid);
-  db.prepare("INSERT OR IGNORE INTO list_entries (media_item_id, list_status) VALUES (?, ?)")
-    .run(mediaItemId, optionalValue(item.status)?.toLowerCase() ?? "saved");
+    const mediaItemId = Number(result.lastInsertRowid);
+    db.prepare("INSERT OR IGNORE INTO list_entries (media_item_id, list_status) VALUES (?, ?)")
+      .run(mediaItemId, optionalValue(nextItem.status)?.toLowerCase() ?? "saved");
 
-  if (item.provider) {
-    db.prepare(`
-      INSERT OR IGNORE INTO provider_cache (provider, external_id, media_type, payload_json, expires_at)
-      VALUES (?, ?, ?, ?, datetime('now', '+7 days'))
-    `).run(item.provider, `local-${mediaItemId}`, item.type, JSON.stringify(item));
-  }
+    if (nextItem.provider) {
+      db.prepare(`
+        INSERT OR IGNORE INTO provider_cache (provider, external_id, media_type, payload_json, expires_at)
+        VALUES (?, ?, ?, ?, datetime('now', '+7 days'))
+      `).run(nextItem.provider, `local-${mediaItemId}`, nextItem.type, JSON.stringify(nextItem));
+    }
 
-  return mediaItemId;
+    return mediaItemId;
+  });
+
+  return insert(item);
 }
 
 function parseJsonArray(value: string | null) {
@@ -396,4 +401,9 @@ export function createManualMediaItem(formData: FormData) {
     playtime: optionalValue(formData.get("playtime")),
     tags,
   });
+}
+
+export function resetMediaDbForTests() {
+  initialized = false;
+  resetWatchlistDatabaseForTests();
 }
