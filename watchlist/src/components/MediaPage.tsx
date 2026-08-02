@@ -52,7 +52,7 @@ export default function MediaPage({
             </p>
             {query.trim() ? (
               <p className="mt-5 text-sm text-[color:var(--muted)]">
-                Showing {filteredCards.length} of {cards.length} {activeItem.toLowerCase()} for "{query.trim()}".
+                Showing {filteredCards.length} of {cards.length} {activeItem.toLowerCase()} for &quot;{query.trim()}&quot;.
               </p>
             ) : null}
           </div>

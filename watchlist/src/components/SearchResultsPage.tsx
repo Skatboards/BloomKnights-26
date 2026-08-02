@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import MediaCardGrid, { filterMediaCards } from "@/components/MediaCardGrid";
@@ -12,20 +12,17 @@ type SearchResultsPageProps = {
   cards: PlaceholderMediaCard[];
 };
 
-export default function SearchResultsPage({ cards }: SearchResultsPageProps) {
+function SearchResultsContent({
+  cards,
+  urlQuery,
+}: SearchResultsPageProps & { urlQuery: string }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const urlQuery = searchParams.get("q") ?? "";
   const [query, setQuery] = useState(urlQuery);
   const trimmedQuery = query.trim();
   const filteredCards = useMemo(
     () => filterMediaCards(cards, query),
     [cards, query],
   );
-
-  useEffect(() => {
-    setQuery(urlQuery);
-  }, [urlQuery]);
 
   const submitSearch = (nextQuery: string) => {
     const nextTrimmedQuery = nextQuery.trim();
@@ -62,7 +59,7 @@ export default function SearchResultsPage({ cards }: SearchResultsPageProps) {
             </p>
             {trimmedQuery ? (
               <p className="mt-5 text-sm text-[color:var(--muted)]">
-                Showing {filteredCards.length} of {cards.length} results for "{trimmedQuery}".
+                Showing {filteredCards.length} of {cards.length} results for &quot;{trimmedQuery}&quot;.
               </p>
             ) : (
               <p className="mt-5 text-sm text-[color:var(--muted)]">
@@ -82,4 +79,11 @@ export default function SearchResultsPage({ cards }: SearchResultsPageProps) {
       </section>
     </main>
   );
+}
+
+export default function SearchResultsPage({ cards }: SearchResultsPageProps) {
+  const searchParams = useSearchParams();
+  const urlQuery = searchParams.get("q") ?? "";
+
+  return <SearchResultsContent key={urlQuery} cards={cards} urlQuery={urlQuery} />;
 }
