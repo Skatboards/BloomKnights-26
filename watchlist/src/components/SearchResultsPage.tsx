@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import MediaCardGrid, { filterMediaCards } from "@/components/MediaCardGrid";
 import type { PlaceholderMediaCard } from "@/data/placeholderMedia";
 
-const navItems = ["Shows", "Movies", "Books", "Games", "Add"];
+const navItems = ["Shows", "Movies", "Books", "Games"];
 
 type SearchResultsPageProps = {
   cards: PlaceholderMediaCard[];
