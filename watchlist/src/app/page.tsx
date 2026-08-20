@@ -165,9 +165,9 @@ async function MediaSections() {
                 </p>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                {placeholderCardsByMediaType[option.label].map((card) => (
+                {placeholderCardsByMediaType[option.label].slice(0, 2).map((card) => (
                   <MediaCardRenderer key={card.type + "-" + card.title} card={card} />
-                ))}
+                  ))}
               </div>
             </section>
           ))}
