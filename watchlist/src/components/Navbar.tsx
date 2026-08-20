@@ -13,7 +13,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({
-  navItems = ["Home", "Shows", "Movies", "Books", "Games", "Add"],
+  navItems = ["Shows", "Movies", "Books", "Games", "Add"],
   brandName = "WatchList",
   activeItem = "Home",
   searchValue,
@@ -33,6 +33,10 @@ export default function Navbar({
     "bg-[color:var(--accent)] text-[color:var(--accent-foreground)]";
   const inactiveNavClass =
     "text-[color:var(--muted)] hover:bg-[color:var(--accent)] hover:text-[color:var(--accent-foreground)]";
+  const brandClassName =
+    activeItem === "Home"
+      ? `shrink-0 cursor-pointer rounded-md px-3 py-2 text-base font-semibold tracking-wide ${activeNavClass} transition`
+      : "shrink-0 cursor-pointer rounded-md px-3 py-2 text-base font-semibold tracking-wide text-[color:var(--foreground)] transition hover:bg-[color:var(--accent)] hover:text-[color:var(--accent-foreground)]";
 
   return (
     <nav className="sticky top-0 z-50 border-b border-[color:var(--border)] bg-[color:var(--nav-bg)] backdrop-blur-xl">
@@ -40,7 +44,8 @@ export default function Navbar({
         <div className="flex shrink-0 items-center gap-6">
           <Link
             href="/"
-            className="shrink-0 cursor-pointer rounded-md px-3 py-2 text-base font-semibold tracking-wide text-[color:var(--foreground)] transition hover:bg-[color:var(--accent)]"
+            className={brandClassName}
+            aria-current={activeItem === "Home" ? "page" : undefined}
           >
             {brandName}
           </Link>

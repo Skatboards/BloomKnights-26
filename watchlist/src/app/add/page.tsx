@@ -6,7 +6,7 @@ import { providerLabels } from "@/lib/mediaProviders";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const navItems = ["Home", "Shows", "Movies", "Books", "Games", "Add"];
+const navItems = ["Shows", "Movies", "Books", "Games", "Add"];
 
 export const metadata: Metadata = {
   title: "Add Media | WatchList",

@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import { BookCard, GameCard, MovieCard, ShowCard } from "@/components/MediaCards";
 import { featuredMedia, placeholderCardsByMediaType, type PlaceholderMediaCard } from "@/data/placeholderMedia";
 
-const navItems = ["Home", "Shows", "Movies", "Books", "Games", "Add"];
+const navItems = ["Shows", "Movies", "Books", "Games", "Add"];
 
 type MediaOption = {
   label: keyof typeof placeholderCardsByMediaType;
@@ -189,7 +189,7 @@ export default function Home() {
         <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-7xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
           <div className="max-w-3xl">
             <p className="mb-5 text-sm font-medium uppercase tracking-[0.24em] text-[color:var(--accent)]">
-              WatchList Home
+              Home
             </p>
             <h1 className="text-5xl font-semibold leading-tight text-[color:var(--foreground)] sm:text-6xl lg:text-7xl">
               One place to plan what you read, watch, and play next.
@@ -220,7 +220,7 @@ export default function Home() {
         <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-20 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-10">
           <div>
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-[color:var(--muted)]">
-              Site Overview
+              Overview
             </p>
             <h2 className="mt-4 text-3xl font-semibold text-[color:var(--foreground)] sm:text-4xl">
               A shared shelf for entertainment choices.
@@ -228,7 +228,7 @@ export default function Home() {
           </div>
           <div className="space-y-5 text-base leading-8 text-[color:var(--muted)]">
             <p>
-              A place to store media: add titles, sort them by
+              One place for all your media: add titles, sort them by
               format, and keep a clean path from discovery to finished.
             </p>
             <p>
