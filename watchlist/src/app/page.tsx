@@ -201,7 +201,7 @@ export default function Home() {
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#options"
+                href="/search"
                 className="rounded-md bg-[color:var(--accent)] px-5 py-3 text-center text-sm font-semibold text-[color:var(--accent-foreground)] transition hover:opacity-90"
               >
                 Explore media
