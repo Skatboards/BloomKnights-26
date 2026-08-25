@@ -1,5 +1,6 @@
 import type Database from "better-sqlite3";
 import * as initialMigration from "@/lib/db/migrations/0001_initial";
+import * as authMigration from "@/lib/db/migrations/0002_auth";
 
 type Migration = {
   version: number;
@@ -7,7 +8,7 @@ type Migration = {
   up: (db: Database.Database) => void;
 };
 
-const migrations: Migration[] = [initialMigration];
+const migrations: Migration[] = [initialMigration, authMigration];
 
 function ensureMigrationsTable(db: Database.Database) {
   db.exec(`
@@ -22,9 +23,7 @@ function ensureMigrationsTable(db: Database.Database) {
 export function runWatchlistMigrations(db: Database.Database) {
   ensureMigrationsTable(db);
 
-  const appliedVersions = new Set<number>(
-    db.prepare("SELECT version FROM schema_migrations").all().map((row) => Number((row as { version: number }).version)),
-  );
+  const appliedVersions = new Set(getAppliedWatchlistMigrationVersions(db));
 
   const pendingMigrations = migrations
     .slice()
@@ -44,6 +43,8 @@ export function runWatchlistMigrations(db: Database.Database) {
 }
 
 export function getAppliedWatchlistMigrationVersions(db: Database.Database) {
-  ensureMigrationsTable(db);
-  return db.prepare("SELECT version FROM schema_migrations ORDER BY version ASC").all().map((row) => Number((row as { version: number }).version));
+  return db
+    .prepare("SELECT version FROM schema_migrations ORDER BY version ASC")
+    .all()
+    .map((row) => Number((row as { version: number }).version));
 }
