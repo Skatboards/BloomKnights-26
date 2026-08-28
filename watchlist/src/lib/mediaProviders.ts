@@ -9,14 +9,14 @@ export type MediaProvider = {
 export const mediaProviders = [
   {
     id: "tmdb",
-    label: "TMDb",
+    label: "TMDB",
     mediaTypes: ["show", "movie"],
     cacheTtlDays: 7,
     notes: "Primary movie and show metadata provider, following the Jellyfin-style provider model.",
   },
   {
     id: "omdb",
-    label: "OMDb",
+    label: "OMDB",
     mediaTypes: ["show", "movie"],
     cacheTtlDays: 14,
     notes: "Supplemental movie and show metadata provider for IMDb-oriented fields.",
