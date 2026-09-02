@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "WatchList",
-  description: "App to visualize media to watch & share.",
+  description: "Media catalog app to visualize media lists to watch & share.",
 };
 
 const themeBootstrap = `
