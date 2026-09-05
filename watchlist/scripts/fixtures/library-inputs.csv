@@ -1,0 +1,12 @@
+case,input,expected
+email-normalization,"  USER@Example.COM  ",user@example.com
+email-invalid,not-an-email,Enter a valid email address.
+email-normalization-secondary,"  MEMBER@Example.COM ",member@example.com
+credentials-valid,"{""email"":""  MEMBER@Example.COM "",""password"":""correct horse battery staple""}","{""email"":""member@example.com"",""password"":""correct horse battery staple""}"
+credentials-empty-password,"{""email"":""member@example.com"",""password"":""""}",Enter your password.
+password-strength,correct horse battery staple,
+password-label-0,0,weak
+password-label-1,1,weak
+password-label-2,2,fair
+password-label-3,3,strong
+password-label-4,4,very strong
