@@ -123,6 +123,7 @@ export function createPasswordResetToken(input: AuthTokenInput) {
   return Number(result.lastInsertRowid);
 }
 
-export function resetAuthDbForTests() {
+/** @internal Used by resetDatabaseForTests. */
+export function resetAuthDatabaseStateForTests() {
   initialized = false;
 }

@@ -11,8 +11,7 @@ let initialized = false;
 
 /**
  * Returns the Drizzle database backed by the application's shared SQLite
- * connection. The existing migration runner remains the source of truth
- * until the authentication schema is migrated in a later stage.
+ * connection.
  */
 export function getDrizzleDatabase() {
   const sqlite = openWatchlistDatabase();
@@ -32,8 +31,9 @@ export function getDrizzleDatabase() {
 /**
  * Clears the Drizzle wrapper after the shared SQLite connection is reset in a
  * test. Production code should not call this function.
- */
-export function resetDrizzleDatabaseForTests() {
+ *
+ * @internal Used by resetDatabaseForTests after the SQLite connection resets. */
+export function resetDrizzleDatabaseStateForTests() {
   cachedDrizzleDb = null;
   initialized = false;
 }

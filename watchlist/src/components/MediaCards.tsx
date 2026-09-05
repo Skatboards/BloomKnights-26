@@ -15,7 +15,6 @@ type MediaCardBaseProps = {
   imageAlt?: string;
   href?: string;
   provider?: string;
-  status?: string;
   tags?: string[];
   meta?: MetaItem[];
   className?: string;
@@ -83,7 +82,6 @@ function MediaCard({
   imageAlt,
   href,
   provider,
-  status,
   tags = [],
   meta = [],
   className = "",
@@ -122,11 +120,6 @@ function MediaCard({
           >
             {style.label}
           </span>
-          {status ? (
-            <span className="rounded border border-[color:var(--border)] px-2 py-1 text-xs font-medium text-[color:var(--muted-strong)]">
-              {status}
-            </span>
-          ) : null}
           {provider ? (
             <span className="ml-auto rounded border border-[color:var(--border)] px-2 py-1 text-xs text-[color:var(--muted)]">
               {provider}

@@ -16,7 +16,7 @@ export default function BooksPage() {
       activeItem="Books"
       eyebrow="Books"
       title="Reading lists for every pace."
-      description="Collect novels, essays, graphic novels, reference titles, and rereads with author, page count, and list status details."
+      description="Collect novels, essays, graphic novels, reference titles, and rereads with author, page count, and source details."
       cards={getMediaCardsByLabel("Books")}
     />
   );

@@ -60,7 +60,7 @@ export default function MediaPage({
           <MediaCardGrid
             cards={filteredCards}
             emptyTitle={`No ${activeItem.toLowerCase()} found`}
-            emptyDescription="Try a different title, source, status, tag, or media detail."
+            emptyDescription="Try a different title, source, tag, or media detail."
           />
         </div>
       </section>

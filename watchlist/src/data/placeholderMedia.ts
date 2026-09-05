@@ -31,9 +31,8 @@ export const featuredMedia = {
     title: "Archive Lane",
     subtitle: "Serialized mystery",
     description:
-      "A compact series card for season tracking, network metadata, status badges, and short discovery notes.",
+      "A compact series card for season tracking, network metadata, and short discovery notes.",
     provider: "OMDb",
-    status: "Watching",
     seasons: "2",
     episodeCount: "16",
     network: "Streaming",
@@ -46,7 +45,6 @@ export const featuredMedia = {
     description:
       "A book card shaped for author names, ISBNs, page counts, cover art, and reading-list state.",
     provider: "Open Library",
-    status: "To read",
     pageCount: "384",
     isbn: "978-0-0000",
     tags: ["Novel", "Speculative", "Library"],
@@ -58,7 +56,6 @@ export const featuredMedia = {
     description:
       "A game card ready for platform, studio, playtime, screenshots, and backlog progress from game APIs.",
     provider: "IGDB / RAWG",
-    status: "Backlog",
     platform: "PC",
     playtime: "18h",
     tags: ["Puzzle", "Co-op", "Indie"],
@@ -70,7 +67,7 @@ export const placeholderCardsByMediaType = {
     {
       ...featuredMedia.book,
       description:
-        "A flexible book card for author names, ISBNs, page counts, cover art, and reading-list state.",
+        "A flexible book card for author names, ISBNs, page counts, and cover art.",
     },
     {
       type: "book",
@@ -79,7 +76,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A compact reading-list entry for nonfiction, essays, reference titles, and future cover data.",
       provider: "Google Books",
-      status: "Saved",
       pageCount: "246",
       tags: ["Essays", "Research", "Reference"],
     },
@@ -88,9 +84,8 @@ export const placeholderCardsByMediaType = {
       title: "Lantern Atlas",
       author: "Nadia Reyes",
       description:
-        "A travel fantasy pick with map notes, reread status, and library-friendly metadata.",
+        "A travel fantasy pick with map notes and library-friendly metadata.",
       provider: "Open Library",
-      status: "Reading",
       pageCount: "512",
       isbn: "978-1-2345",
       tags: ["Fantasy", "Maps", "Series"],
@@ -102,7 +97,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A systems-thinking nonfiction slot for technical recommendations and saved research.",
       provider: "Google Books",
-      status: "To read",
       pageCount: "328",
       tags: ["Nonfiction", "Technology", "Work"],
     },
@@ -111,9 +105,8 @@ export const placeholderCardsByMediaType = {
       title: "Paper Moons",
       author: "Elena Hart",
       description:
-        "A short story collection card for literary picks, finished status, and author discovery.",
+        "A short story collection card for literary picks and author discovery.",
       provider: "Open Library",
-      status: "Finished",
       pageCount: "204",
       tags: ["Stories", "Literary", "Short"],
     },
@@ -124,7 +117,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A speculative mystery title for tracking genre, page count, and recommendation sources.",
       provider: "Google Books",
-      status: "Saved",
       pageCount: "416",
       tags: ["Mystery", "Speculative", "Queue"],
     },
@@ -135,7 +127,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A practical design and planning book for reference shelves and future API notes.",
       provider: "Google Books",
-      status: "To read",
       pageCount: "272",
       tags: ["Design", "Planning", "Reference"],
     },
@@ -144,9 +135,8 @@ export const placeholderCardsByMediaType = {
       title: "Blue Room Almanac",
       author: "Theo Marsh",
       description:
-        "A graphic novel placeholder with room for cover art, edition data, and reading progress.",
+        "A graphic novel placeholder with room for cover art and edition data.",
       provider: "Open Library",
-      status: "Saved",
       pageCount: "188",
       tags: ["Graphic novel", "Art", "Weekend"],
     },
@@ -155,7 +145,7 @@ export const placeholderCardsByMediaType = {
     {
       ...featuredMedia.show,
       description:
-        "A series card for season tracking, network metadata, status badges, and short discovery notes.",
+        "A series card for season tracking, network metadata, and short discovery notes.",
     },
     {
       type: "show",
@@ -164,7 +154,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A second show slot for upcoming API-backed recommendations and episode progress.",
       provider: "TMDB",
-      status: "Next up",
       seasons: "1",
       episodeCount: "8",
       network: "Streaming",
@@ -177,7 +166,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A documentary series placeholder for source, episode count, and watch progress.",
       provider: "TMDB",
-      status: "Saved",
       seasons: "1",
       episodeCount: "6",
       network: "Public TV",
@@ -190,7 +178,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A serialized drama with room for network metadata and next-episode reminders.",
       provider: "OMDb",
-      status: "Watching",
       seasons: "3",
       episodeCount: "30",
       network: "Cable",
@@ -203,7 +190,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A light reality series entry for casual watching and shared recommendation lists.",
       provider: "TMDB",
-      status: "Saved",
       seasons: "2",
       episodeCount: "20",
       network: "Streaming",
@@ -216,7 +202,6 @@ export const placeholderCardsByMediaType = {
       description:
         "An animated series card with genre tags, season totals, and provider data.",
       provider: "TMDB",
-      status: "Next up",
       seasons: "4",
       episodeCount: "44",
       network: "Streaming",
@@ -227,9 +212,8 @@ export const placeholderCardsByMediaType = {
       title: "The Index Room",
       subtitle: "Archive thriller",
       description:
-        "A limited thriller series for tracking short-run status and mystery recommendations.",
+        "A limited thriller series for tracking short-run recommendations and mystery picks.",
       provider: "OMDb",
-      status: "Finished",
       seasons: "1",
       episodeCount: "7",
       network: "Premium",
@@ -242,7 +226,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A weekend maker show placeholder for future episode artwork and search data.",
       provider: "TMDB",
-      status: "Saved",
       seasons: "2",
       episodeCount: "18",
       network: "Web",
@@ -258,7 +241,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A movie card tuned for runtime, ratings, release years, poster art, and quick watchlist decisions.",
       provider: "OMDb",
-      status: "Saved",
       releaseYear: "2025",
       runtime: "1h 36m",
       rating: "PG",
@@ -271,7 +253,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A moody mystery placeholder with release year, runtime, and provider metadata.",
       provider: "TMDB",
-      status: "Watching",
       releaseYear: "2024",
       runtime: "2h 04m",
       rating: "R",
@@ -284,7 +265,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A light comedy entry for date-night filters, ratings, and saved recommendations.",
       provider: "OMDb",
-      status: "Saved",
       releaseYear: "2023",
       runtime: "1h 42m",
       rating: "PG-13",
@@ -297,7 +277,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A historical film placeholder for release year search and long-form watch planning.",
       provider: "TMDB",
-      status: "To watch",
       releaseYear: "2022",
       runtime: "2h 18m",
       rating: "PG-13",
@@ -310,7 +289,6 @@ export const placeholderCardsByMediaType = {
       description:
         "An animated feature for family watchlists, provider filters, and genre browsing.",
       provider: "OMDb",
-      status: "Saved",
       releaseYear: "2026",
       runtime: "1h 31m",
       rating: "PG",
@@ -323,7 +301,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A documentary card for music recommendations, runtime details, and source tracking.",
       provider: "TMDB",
-      status: "Finished",
       releaseYear: "2021",
       runtime: "1h 58m",
       rating: "PG-13",
@@ -336,7 +313,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A high-energy thriller placeholder for quick watch decisions and rating filters.",
       provider: "OMDb",
-      status: "To watch",
       releaseYear: "2020",
       runtime: "1h 49m",
       rating: "PG-13",
@@ -352,7 +328,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A second play queue card for platform filters, session planning, and future API artwork.",
       provider: "IGDB",
-      status: "Playing",
       platform: "Switch",
       playtime: "42h",
       tags: ["RPG", "Party", "Campaign"],
@@ -362,9 +337,8 @@ export const placeholderCardsByMediaType = {
       title: "Meadow Circuit",
       studio: "Bright Arc",
       description:
-        "A cozy racing game placeholder for platform search, short sessions, and backlog status.",
+        "A cozy racing game placeholder for platform search and short sessions.",
       provider: "RAWG",
-      status: "Saved",
       platform: "PC",
       playtime: "8h",
       tags: ["Racing", "Cozy", "Indie"],
@@ -376,7 +350,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A tactics game card for playtime estimates, studio metadata, and platform filters.",
       provider: "IGDB",
-      status: "Backlog",
       platform: "PlayStation",
       playtime: "35h",
       tags: ["Strategy", "Tactics", "Campaign"],
@@ -388,7 +361,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A casual discovery game entry for short play sessions and future screenshot data.",
       provider: "RAWG",
-      status: "Playing",
       platform: "Mobile",
       playtime: "5h",
       tags: ["Casual", "Space", "Puzzle"],
@@ -400,7 +372,6 @@ export const placeholderCardsByMediaType = {
       description:
         "An action adventure placeholder with studio, platform, and completion-time metadata.",
       provider: "IGDB",
-      status: "To play",
       platform: "Xbox",
       playtime: "24h",
       tags: ["Action", "Adventure", "Co-op"],
@@ -412,7 +383,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A couch co-op game card for party-night planning and local multiplayer filters.",
       provider: "RAWG",
-      status: "Saved",
       platform: "Switch",
       playtime: "12h",
       tags: ["Co-op", "Party", "Cooking"],
@@ -424,7 +394,6 @@ export const placeholderCardsByMediaType = {
       description:
         "A narrative exploration game placeholder for backlog progress and story tags.",
       provider: "IGDB",
-      status: "Finished",
       platform: "PC",
       playtime: "16h",
       tags: ["Narrative", "Exploration", "Mystery"],

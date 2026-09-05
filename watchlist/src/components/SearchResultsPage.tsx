@@ -72,7 +72,7 @@ function SearchResultsContent({
             <MediaCardGrid
               cards={trimmedQuery ? filteredCards : cards}
               emptyTitle="No search results found"
-              emptyDescription="Try another title, creator, source, status, tag, or media detail."
+              emptyDescription="Try another title, creator, source, tag, or media detail."
             />
           </div>
         </div>

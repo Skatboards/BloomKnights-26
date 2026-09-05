@@ -1,4 +1,4 @@
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, unlinkSync } from "node:fs";
 import path from "node:path";
 import Database from "better-sqlite3";
 
@@ -49,7 +49,25 @@ export function shouldSeedDemoData() {
   return process.env.NODE_ENV !== "production";
 }
 
-export function resetWatchlistDatabaseForTests() {
+/** @internal Used by resetDatabaseForTests to close the shared connection. */
+export function closeWatchlistDatabaseForTests() {
   cachedDb?.close();
   cachedDb = null;
+}
+
+/**
+ * Deletes the configured SQLite database and its SQLite sidecar files.
+ * This is intentionally separate from the test connection reset helper.
+ *
+ * @internal Used by resetDatabaseForTests when a file reset is requested. */
+export function deleteWatchlistDatabaseForTests(options: WatchlistDatabaseOptions = {}) {
+  const databasePath = resolveDatabasePath(options);
+
+  closeWatchlistDatabaseForTests();
+
+  for (const pathToRemove of [databasePath, `${databasePath}-wal`, `${databasePath}-shm`]) {
+    if (existsSync(pathToRemove)) {
+      unlinkSync(pathToRemove);
+    }
+  }
 }

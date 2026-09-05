@@ -16,7 +16,6 @@ function searchableValues(card: PlaceholderMediaCard) {
     card.subtitle,
     card.description,
     card.provider,
-    card.status,
     ...(card.tags ?? []),
     ...(card.meta?.flatMap((item) => [item.label, item.value]) ?? []),
   ];

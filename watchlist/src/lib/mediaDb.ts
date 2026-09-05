@@ -2,7 +2,6 @@ import Database from "better-sqlite3";
 import { placeholderCardsByMediaType, type PlaceholderMediaCard } from "@/data/placeholderMedia";
 import {
   openWatchlistDatabase,
-  resetWatchlistDatabaseForTests,
   shouldSeedDemoData,
 } from "@/lib/db/bootstrap";
 import { runWatchlistMigrations } from "@/lib/db/migrate";
@@ -16,7 +15,6 @@ type MediaItemRow = {
   subtitle: string | null;
   description: string;
   provider: string | null;
-  status: string | null;
   image_url: string | null;
   image_alt: string | null;
   runtime: string | null;
@@ -41,7 +39,6 @@ export type MediaItemInput = {
   subtitle?: string;
   description: string;
   provider?: string;
-  status?: string;
   imageUrl?: string;
   imageAlt?: string;
   runtime?: string;
@@ -104,7 +101,6 @@ function cardToMediaItemInput(card: PlaceholderMediaCard): MediaItemInput {
     subtitle: card.subtitle,
     description: card.description,
     provider: card.provider,
-    status: card.status,
     imageUrl: card.imageUrl,
     imageAlt: card.imageAlt,
     tags: card.tags,
@@ -154,7 +150,7 @@ function insertMediaItem(db: Database.Database, item: MediaItemInput) {
   const insert = db.transaction((nextItem: MediaItemInput) => {
     const result = db.prepare(`
       INSERT INTO media_items (
-        media_type, title, subtitle, description, provider, status, image_url, image_alt,
+        media_type, title, subtitle, description, provider, image_url, image_alt,
         runtime, rating, release_year, seasons, episode_count, network, author, page_count,
         isbn, platform, studio, playtime, tags_json, meta_json
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -164,7 +160,6 @@ function insertMediaItem(db: Database.Database, item: MediaItemInput) {
       optionalValue(nextItem.subtitle) ?? null,
       nextItem.description,
       optionalValue(nextItem.provider) ?? null,
-      optionalValue(nextItem.status) ?? "Saved",
       optionalValue(nextItem.imageUrl) ?? null,
       optionalValue(nextItem.imageAlt) ?? null,
       optionalValue(nextItem.runtime) ?? null,
@@ -184,9 +179,6 @@ function insertMediaItem(db: Database.Database, item: MediaItemInput) {
     );
 
     const mediaItemId = Number(result.lastInsertRowid);
-    db.prepare("INSERT OR IGNORE INTO list_entries (media_item_id, list_status) VALUES (?, ?)")
-      .run(mediaItemId, optionalValue(nextItem.status)?.toLowerCase() ?? "saved");
-
     if (nextItem.provider) {
       db.prepare(`
         INSERT OR IGNORE INTO provider_cache (provider, external_id, media_type, payload_json, expires_at)
@@ -219,7 +211,6 @@ function rowToCard(row: MediaItemRow): PlaceholderMediaCard {
     subtitle: row.subtitle ?? undefined,
     description: row.description,
     provider: row.provider ?? undefined,
-    status: row.status ?? undefined,
     imageUrl: row.image_url ?? undefined,
     imageAlt: row.image_alt ?? undefined,
     tags: parseJsonArray(row.tags_json) as string[],
@@ -282,6 +273,7 @@ export function getAllMediaCards() {
   return rows.map(rowToCard);
 }
 
+/** @deprecated Custom media creation is disabled while media remains global. */
 export function createManualMediaItem(formData: FormData) {
   const mediaType = optionalValue(formData.get("type")) as MediaType | undefined;
   const title = optionalValue(formData.get("title"));
@@ -305,7 +297,6 @@ export function createManualMediaItem(formData: FormData) {
     subtitle: optionalValue(formData.get("subtitle")),
     description: optionalValue(formData.get("description")) ?? "Manual watchlist entry.",
     provider: optionalValue(formData.get("provider")) ?? "Manual",
-    status: optionalValue(formData.get("status")) ?? "Saved",
     imageUrl: optionalValue(formData.get("imageUrl")),
     imageAlt: optionalValue(formData.get("imageAlt")),
     runtime: optionalValue(formData.get("runtime")),
@@ -324,7 +315,7 @@ export function createManualMediaItem(formData: FormData) {
   });
 }
 
-export function resetMediaDbForTests() {
+/** @internal Used by resetDatabaseForTests. */
+export function resetMediaDatabaseStateForTests() {
   initialized = false;
-  resetWatchlistDatabaseForTests();
 }
