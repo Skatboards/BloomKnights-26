@@ -2,8 +2,9 @@ import { drizzle, type BetterSQLite3Database } from "drizzle-orm/better-sqlite3"
 
 import { openWatchlistDatabase } from "@/lib/db/bootstrap";
 import { runWatchlistMigrations } from "@/lib/db/migrate";
+import { authSchema } from "@/lib/db/schema/auth";
 
-export type WatchlistDrizzleDatabase = BetterSQLite3Database;
+export type WatchlistDrizzleDatabase = BetterSQLite3Database<typeof authSchema>;
 
 let cachedDrizzleDb: WatchlistDrizzleDatabase | null = null;
 let initialized = false;
@@ -22,7 +23,7 @@ export function getDrizzleDatabase() {
   }
 
   if (!cachedDrizzleDb) {
-    cachedDrizzleDb = drizzle({ client: sqlite });
+    cachedDrizzleDb = drizzle({ client: sqlite, schema: authSchema });
   }
 
   return cachedDrizzleDb;

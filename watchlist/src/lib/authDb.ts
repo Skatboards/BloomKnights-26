@@ -8,23 +8,23 @@ export type NewUserInput = {
 };
 
 export type AuthSessionInput = {
-  userId: number;
+  userId: string;
   sessionTokenHash: string;
   expiresAt: string;
 };
 
 export type AuthTokenInput = {
-  userId: number;
+  userId: string;
   tokenHash: string;
   expiresAt: string;
 };
 
 export type AuthUserRow = {
-  id: number;
+  id: string;
   email: string;
-  display_name: string;
-  password_hash: string;
-  email_verified_at: string | null;
+  display_name: string | null;
+  password_hash: string | null;
+  email_verified_at: number | null;
   disabled_at: string | null;
   created_at: string;
   updated_at: string;
@@ -32,7 +32,7 @@ export type AuthUserRow = {
 
 export type AuthSessionRow = {
   id: number;
-  user_id: number;
+  user_id: string;
   session_token_hash: string;
   created_at: string;
   expires_at: string;
@@ -59,12 +59,13 @@ export function normalizeEmail(email: string) {
 
 export function createUser(input: NewUserInput) {
   const db = getDb();
-  const result = db.prepare(`
-    INSERT INTO users (email, display_name, password_hash)
-    VALUES (?, ?, ?)
-  `).run(normalizeEmail(input.email), input.displayName.trim(), input.passwordHash);
+  const userId = crypto.randomUUID();
+  db.prepare(`
+    INSERT INTO users (id, email, display_name, password_hash)
+    VALUES (?, ?, ?, ?)
+  `).run(userId, normalizeEmail(input.email), input.displayName.trim(), input.passwordHash);
 
-  return Number(result.lastInsertRowid);
+  return userId;
 }
 
 export function findUserByEmail(email: string) {
@@ -77,7 +78,7 @@ export function findUserByEmail(email: string) {
   `).get(normalizeEmail(email)) as AuthUserRow | undefined;
 }
 
-export function findUserById(userId: number) {
+export function findUserById(userId: string) {
   const db = getDb();
   return db.prepare(`
     SELECT *
@@ -87,31 +88,34 @@ export function findUserById(userId: number) {
   `).get(userId) as AuthUserRow | undefined;
 }
 
+/** @deprecated JWT sessions replace this legacy database-session helper. */
 export function createSession(input: AuthSessionInput) {
   const db = getDb();
   const result = db.prepare(`
-    INSERT INTO sessions (user_id, session_token_hash, expires_at)
+    INSERT INTO legacy_sessions (user_id, session_token_hash, expires_at)
     VALUES (?, ?, ?)
   `).run(input.userId, input.sessionTokenHash, input.expiresAt);
 
   return Number(result.lastInsertRowid);
 }
 
+/** @deprecated JWT sessions replace this legacy database-session helper. */
 export function findSessionByTokenHash(tokenHash: string) {
   const db = getDb();
   return db.prepare(`
     SELECT *
-    FROM sessions
+    FROM legacy_sessions
     WHERE session_token_hash = ?
     LIMIT 1
   `).get(tokenHash) as AuthSessionRow | undefined;
 }
 
+/** @deprecated JWT sessions replace this legacy database-session helper. */
 export function revokeSessionByTokenHash(tokenHash: string) {
   const db = getDb();
 
   return db.prepare(`
-    UPDATE sessions
+    UPDATE legacy_sessions
     SET revoked_at = CURRENT_TIMESTAMP
     WHERE session_token_hash = ? AND revoked_at IS NULL
   `).run(tokenHash);
@@ -136,7 +140,7 @@ export function consumeEmailVerificationTokenByHash(tokenHash: string) {
       FROM email_verifications
       WHERE token_hash = ?
       LIMIT 1
-    `).get(tokenHash) as { id: number; user_id: number; consumed_at: string | null; expires_at: string } | undefined;
+    `).get(tokenHash) as { id: number; user_id: string; consumed_at: string | null; expires_at: string } | undefined;
 
     if (!verification || verification.consumed_at) {
       return undefined;
@@ -150,7 +154,7 @@ export function consumeEmailVerificationTokenByHash(tokenHash: string) {
 
     db.prepare(`
       UPDATE users
-      SET email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP), updated_at = CURRENT_TIMESTAMP
+      SET email_verified_at = COALESCE(email_verified_at, unixepoch('now') * 1000), updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `).run(verification.user_id);
 
