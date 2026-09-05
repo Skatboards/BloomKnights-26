@@ -7,12 +7,6 @@ export type NewUserInput = {
   passwordHash: string;
 };
 
-export type AuthSessionInput = {
-  userId: string;
-  sessionTokenHash: string;
-  expiresAt: string;
-};
-
 export type AuthTokenInput = {
   userId: string;
   tokenHash: string;
@@ -28,16 +22,6 @@ export type AuthUserRow = {
   disabled_at: string | null;
   created_at: string;
   updated_at: string;
-};
-
-export type AuthSessionRow = {
-  id: number;
-  user_id: string;
-  session_token_hash: string;
-  created_at: string;
-  expires_at: string;
-  last_seen_at: string | null;
-  revoked_at: string | null;
 };
 
 let initialized = false;
@@ -86,39 +70,6 @@ export function findUserById(userId: string) {
     WHERE id = ?
     LIMIT 1
   `).get(userId) as AuthUserRow | undefined;
-}
-
-/** @deprecated JWT sessions replace this legacy database-session helper. */
-export function createSession(input: AuthSessionInput) {
-  const db = getDb();
-  const result = db.prepare(`
-    INSERT INTO legacy_sessions (user_id, session_token_hash, expires_at)
-    VALUES (?, ?, ?)
-  `).run(input.userId, input.sessionTokenHash, input.expiresAt);
-
-  return Number(result.lastInsertRowid);
-}
-
-/** @deprecated JWT sessions replace this legacy database-session helper. */
-export function findSessionByTokenHash(tokenHash: string) {
-  const db = getDb();
-  return db.prepare(`
-    SELECT *
-    FROM legacy_sessions
-    WHERE session_token_hash = ?
-    LIMIT 1
-  `).get(tokenHash) as AuthSessionRow | undefined;
-}
-
-/** @deprecated JWT sessions replace this legacy database-session helper. */
-export function revokeSessionByTokenHash(tokenHash: string) {
-  const db = getDb();
-
-  return db.prepare(`
-    UPDATE legacy_sessions
-    SET revoked_at = CURRENT_TIMESTAMP
-    WHERE session_token_hash = ? AND revoked_at IS NULL
-  `).run(tokenHash);
 }
 
 export function createEmailVerificationToken(input: AuthTokenInput) {

@@ -1,7 +1,5 @@
 import type Database from "better-sqlite3";
 import * as initialMigration from "@/lib/db/migrations/0001_initial";
-import * as authMigration from "@/lib/db/migrations/0002_auth";
-import * as authjsMigration from "@/lib/db/migrations/0003_authjs_schema";
 
 type Migration = {
   version: number;
@@ -9,7 +7,7 @@ type Migration = {
   up: (db: Database.Database) => void;
 };
 
-const migrations: Migration[] = [initialMigration, authMigration, authjsMigration];
+const migrations: Migration[] = [initialMigration];
 
 function ensureMigrationsTable(db: Database.Database) {
   db.exec(`
