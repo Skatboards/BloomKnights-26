@@ -153,7 +153,7 @@ function insertMediaItem(db: Database.Database, item: MediaItemInput) {
         media_type, title, subtitle, description, provider, image_url, image_alt,
         runtime, rating, release_year, seasons, episode_count, network, author, page_count,
         isbn, platform, studio, playtime, tags_json, meta_json
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       nextItem.type,
       nextItem.title,
