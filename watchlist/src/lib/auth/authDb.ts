@@ -1,5 +1,8 @@
 import { openWatchlistDatabase } from "@/lib/db/bootstrap";
 import { runWatchlistMigrations } from "@/lib/db/migrate";
+import { normalizeEmail } from "@/lib/auth/validation";
+
+export { normalizeEmail } from "@/lib/auth/validation";
 
 export type NewUserInput = {
   email: string;
@@ -35,10 +38,6 @@ function getDb() {
   }
 
   return db;
-}
-
-export function normalizeEmail(email: string) {
-  return email.trim().toLowerCase();
 }
 
 export function createUser(input: NewUserInput) {

@@ -3,9 +3,9 @@ import {
   deleteWatchlistDatabaseForTests,
   type WatchlistDatabaseOptions,
 } from "@/lib/db/bootstrap";
-import { resetAuthDatabaseStateForTests } from "@/lib/authDb";
+import { resetAuthDatabaseStateForTests } from "@/lib/auth/authDb";
 import { resetDrizzleDatabaseStateForTests } from "@/lib/db/drizzle";
-import { resetMediaDatabaseStateForTests } from "@/lib/mediaDb";
+import { resetMediaDatabaseStateForTests } from "@/lib/db/media";
 
 export type ResetDatabaseOptions = WatchlistDatabaseOptions & {
   deleteFile?: boolean;
