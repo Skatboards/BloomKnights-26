@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import MediaPage from "@/components/MediaPage";
-import { getMediaCardsByLabel } from "@/lib/db/media";
+import { getMediaCardsByLabel } from "@/lib/media/mediaDb";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

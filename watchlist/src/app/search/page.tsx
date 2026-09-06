@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import SearchResultsPage from "@/components/SearchResultsPage";
-import { getAllMediaCards } from "@/lib/db/media";
+import { getAllMediaCards } from "@/lib/media/mediaDb";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
