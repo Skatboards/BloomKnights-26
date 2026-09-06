@@ -1,1 +1,1 @@
-WatchList repository for BloomKnights 2026
+Poob repository for BloomKnights 2026
