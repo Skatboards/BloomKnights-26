@@ -88,7 +88,7 @@ export default function NavbarMenu({ initialUser = null }: NavbarMenuProps) {
     <div ref={menuRef} className="relative ml-auto shrink-0">
       <button
         type="button"
-        className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)] focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]"
+        className="flex h-10 w-10 cursor-pointer select-none items-center justify-center rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--foreground)] transition [-webkit-tap-highlight-color:transparent] hover:bg-[color:var(--accent-soft)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
         aria-label={isOpen ? "Close menu" : "Open menu"}
         aria-expanded={isOpen}
         aria-haspopup="menu"
@@ -122,7 +122,7 @@ export default function NavbarMenu({ initialUser = null }: NavbarMenuProps) {
             <span className="font-medium">Theme</span>
             <button
               type="button"
-              className={`relative h-6 w-11 cursor-pointer rounded-full border focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] ${
+              className={`relative h-6 w-11 cursor-pointer select-none rounded-full border [-webkit-tap-highlight-color:transparent] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
                 isLightTheme
                   ? "bg-[color:var(--accent)]"
                   : "bg-[color:var(--surface)]"

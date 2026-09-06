@@ -5,12 +5,11 @@ import { test } from "node:test";
 import {
   credentialsSchema,
   emailSchema,
-  normalizeEmail,
-} from "../src/lib/auth/validation";
-import {
   evaluatePasswordStrength,
   getPasswordStrengthLabel,
-} from "../src/lib/auth/passwordStrength";
+  normalizeEmail,
+  registrationSchema,
+} from "../src/lib/auth/validation";
 import { mediaProviders, providerLabels } from "../src/lib/media/providers";
 
 type LibraryInput = {
@@ -104,6 +103,31 @@ test("evaluatePasswordStrength returns the expected result shape", () => {
   assert.equal(typeof result.crackTimeDisplay, "string");
   assert.equal(typeof result.warning, "string");
   assert.equal(Array.isArray(result.suggestions), true);
+});
+
+test("registrationSchema rejects passwords below the strong threshold", () => {
+  const input = inputFor("registration-weak-password");
+  const result = registrationSchema.safeParse({
+    displayName: "Member",
+    email: "member@example.com",
+    password: input.input,
+  });
+
+  assert.equal(result.success, false);
+  if (!result.success) {
+    assert.equal(result.error.flatten().fieldErrors.password?.[0], input.expected);
+  }
+});
+
+test("registrationSchema accepts a strong password", () => {
+  const input = inputFor("registration-strong-password");
+  const result = registrationSchema.safeParse({
+    displayName: "Member",
+    email: "member@example.com",
+    password: input.input,
+  });
+
+  assert.equal(result.success, true);
 });
 
 test("getPasswordStrengthLabel maps every supported score", () => {

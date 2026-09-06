@@ -23,6 +23,7 @@ export default function LoginForm() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState<string>();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const updateField = (field: FieldName, value: string) => {
     setValues((current) => ({ ...current, [field]: value }));
@@ -114,18 +115,21 @@ export default function LoginForm() {
                 <label htmlFor="password" className="text-sm font-medium">Password</label>
                 <Link href="/auth/password-reset" className="text-xs text-[color:var(--accent)] hover:underline">Forgot password?</Link>
               </div>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                value={values.password}
-                onChange={(event) => updateField("password", event.target.value)}
-                onBlur={() => setErrors((current) => ({ ...current, password: validateField("password", values.password) }))}
-                aria-invalid={Boolean(errors.password)}
-                aria-describedby={errors.password ? "password-error" : undefined}
-                className="h-11 rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 text-sm outline-none transition focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  value={values.password}
+                  onChange={(event) => updateField("password", event.target.value)}
+                  onBlur={() => setErrors((current) => ({ ...current, password: validateField("password", values.password) }))}
+                  aria-invalid={Boolean(errors.password)}
+                  aria-describedby={errors.password ? "password-error" : undefined}
+                  className="h-11 w-full rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 pr-20 text-sm outline-none transition focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]"
+                />
+                <button type="button" onClick={() => setShowPassword((visible) => !visible)} className="absolute inset-y-0 right-3 select-none text-xs font-medium text-[color:var(--muted)] [-webkit-tap-highlight-color:transparent] hover:text-[color:var(--foreground)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]" aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "Hide" : "Show"}</button>
+              </div>
               {errors.password ? <p id="password-error" className="text-sm text-red-400">{errors.password}</p> : null}
             </div>
 

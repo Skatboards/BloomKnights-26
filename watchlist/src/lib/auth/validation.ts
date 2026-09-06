@@ -27,22 +27,33 @@ export const emailSchema = z
     error: "Enter a valid email address." 
   }));
 
+/** Validation used when an existing user submits credentials to sign in. */
 export const credentialsSchema = z.object({
   email: emailSchema,
   password: z.string().min(1, "Enter your password."),
 });
 
-export const registrationPasswordSchema = z
-  .string()
-  .min(8, "Password must be at least 8 characters.")
-  .refine(
-    (password) => evaluatePasswordStrength(password).score >= 3,
-    { error: "Password strength must be strong or very strong." },
-  );
-
-export const registrationSchema = credentialsSchema.extend({
+/**
+ * Client-side registration validation. This intentionally checks only basic
+ * field requirements; password strength is display-only in the browser.
+ */
+export const registrationFormSchema = credentialsSchema.extend({
   displayName: z.string().trim().min(1, "Enter your name.").max(80, "Name must be 80 characters or fewer."),
-  password: registrationPasswordSchema,
+  password: z.string().min(8, "Password must be at least 8 characters."),
+});
+
+/**
+ * Server-side registration validation. The API must use this schema because
+ * client-side checks can be bypassed. It adds the strong-password policy.
+ */
+export const registrationSchema = registrationFormSchema.superRefine((data, context) => {
+  if (evaluatePasswordStrength(data.password, [data.displayName, data.email]).score < 3) {
+    context.addIssue({
+      code: "custom",
+      path: ["password"],
+      message: "Password strength must be strong or very strong.",
+    });
+  }
 });
 
 export function normalizeEmail(email: string) {
