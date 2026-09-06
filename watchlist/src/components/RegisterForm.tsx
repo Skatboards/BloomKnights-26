@@ -24,7 +24,6 @@ export default function RegisterForm() {
   const [values, setValues] = useState({ displayName: "", email: "", password: "" });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState<string>();
-  const [successMessage, setSuccessMessage] = useState<string>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const passwordStrength = values.password
@@ -45,7 +44,6 @@ export default function RegisterForm() {
   const updateField = (field: FieldName, value: string) => {
     setValues((current) => ({ ...current, [field]: value }));
     setServerError(undefined);
-    setSuccessMessage(undefined);
   };
 
   const validate = () => {
@@ -69,7 +67,6 @@ export default function RegisterForm() {
   const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setServerError(undefined);
-    setSuccessMessage(undefined);
 
     const registration = validate();
     if (!registration) return;
@@ -81,13 +78,12 @@ export default function RegisterForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(registration),
       });
-      const result = await response.json() as { error?: string; message?: string };
+      const result = await response.json() as { error?: string };
 
       if (!response.ok) {
         setServerError(result.error ?? "Unable to create your account.");
       } else {
-        setValues({ displayName: "", email: "", password: "" });
-        setSuccessMessage(result.message ?? "Account created.");
+        window.location.assign(`/auth/verify?email=${encodeURIComponent(registration.email)}`);
       }
     } catch {
       setServerError("Unable to create your account. Try again.");
@@ -140,7 +136,6 @@ export default function RegisterForm() {
               </div>
 
               {serverError ? <p role="alert" className="text-sm text-red-400">{serverError}</p> : null}
-              {successMessage ? <p role="status" className="text-sm text-[color:var(--live-fg)]">{successMessage}</p> : null}
               <button type="submit" disabled={isSubmitting} className="h-11 rounded-md bg-[color:var(--accent)] px-4 text-sm font-semibold text-[color:var(--accent-foreground)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60">{isSubmitting ? "Creating account…" : "Create account"}</button>
             </form>
 
