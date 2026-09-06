@@ -19,10 +19,10 @@ function ensureMigrationsTable(db: Database.Database) {
   `);
 }
 
-export function runWatchlistMigrations(db: Database.Database) {
+export function runPoobMigrations(db: Database.Database) {
   ensureMigrationsTable(db);
 
-  const appliedVersions = new Set(getAppliedWatchlistMigrationVersions(db));
+  const appliedVersions = new Set(getAppliedPoobMigrationVersions(db));
 
   const pendingMigrations = migrations
     .slice()
@@ -41,7 +41,7 @@ export function runWatchlistMigrations(db: Database.Database) {
   applyPending();
 }
 
-export function getAppliedWatchlistMigrationVersions(db: Database.Database) {
+export function getAppliedPoobMigrationVersions(db: Database.Database) {
   return db
     .prepare("SELECT version FROM schema_migrations ORDER BY version ASC")
     .all()

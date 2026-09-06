@@ -1,5 +1,5 @@
-import { openWatchlistDatabase } from "@/lib/db/bootstrap";
-import { runWatchlistMigrations } from "@/lib/db/migrate";
+import { openPoobDatabase } from "@/lib/db/bootstrap";
+import { runPoobMigrations } from "@/lib/db/migrate";
 import { normalizeEmail } from "@/lib/auth/validation";
 
 export { normalizeEmail } from "@/lib/auth/validation";
@@ -30,11 +30,11 @@ export type AuthUserRow = {
 let initialized = false;
 
 function getDb() {
-  const db = openWatchlistDatabase();
+  const db = openPoobDatabase();
 
   if (!initialized) {
     initialized = true;
-    runWatchlistMigrations(db);
+    runPoobMigrations(db);
   }
 
   return db;

@@ -14,7 +14,7 @@ interface NavbarProps {
 
 export default function Navbar({
   navItems = ["Shows", "Movies", "Books", "Games"],
-  brandName = "WatchList",
+  brandName = "Poob",
   activeItem = "Home",
   searchValue,
   onSearchChange,

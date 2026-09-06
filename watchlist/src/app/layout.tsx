@@ -13,14 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "WatchList",
+  title: "Poob",
   description: "Media catalog app to visualize media lists to watch & share.",
 };
 
 const themeBootstrap = `
 (() => {
   try {
-    const stored = localStorage.getItem('watchlist-theme');
+    const stored = localStorage.getItem('poob-theme');
     const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
     const theme = stored === 'light' || stored === 'dark' ? stored : (prefersLight ? 'light' : 'dark');
     document.documentElement.dataset.theme = theme;

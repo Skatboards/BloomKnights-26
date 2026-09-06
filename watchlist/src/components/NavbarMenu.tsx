@@ -8,7 +8,7 @@ type NavbarMenuProps = {
   initialUser?: { name?: string } | null;
 };
 
-const themeStorageKey = "watchlist-theme";
+const themeStorageKey = "poob-theme";
 
 function getStoredTheme(): Theme {
   if (typeof window === "undefined") {

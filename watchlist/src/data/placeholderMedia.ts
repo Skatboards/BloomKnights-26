@@ -239,7 +239,7 @@ export const placeholderCardsByMediaType = {
       title: "Saturday Matinee",
       subtitle: "Family adventure",
       description:
-        "A movie card tuned for runtime, ratings, release years, poster art, and quick watchlist decisions.",
+        "A movie card tuned for runtime, ratings, release years, poster art, and quick Poob decisions.",
       provider: "OMDb",
       releaseYear: "2025",
       runtime: "1h 36m",
@@ -287,7 +287,7 @@ export const placeholderCardsByMediaType = {
       title: "Orbit & Oak",
       subtitle: "Animated feature",
       description:
-        "An animated feature for family watchlists, provider filters, and genre browsing.",
+        "An animated feature for family Poob lists, provider filters, and genre browsing.",
       provider: "OMDb",
       releaseYear: "2026",
       runtime: "1h 31m",

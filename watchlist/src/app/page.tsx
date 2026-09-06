@@ -26,7 +26,7 @@ const mediaOptions: MediaOption[] = [
   },
   {
     label: "Movies",
-    title: "A watchlist for any mood",
+    title: "A poob list for any mood",
     description:
       "Save new releases, classics, festival picks, family nights, and late-night discoveries.",
   },
@@ -195,7 +195,7 @@ export default function Home() {
               One place to plan what you read, watch, and play next.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[color:var(--muted)]">
-              WatchList gives a simple overview of books, shows, 
+              poob gives a simple overview of books, shows,
               movies, and games so you can plan and share what
               you&apos;re watching.
             </p>
@@ -233,7 +233,7 @@ export default function Home() {
             </p>
             <p>
               Find new media to share and recommend to friends. If you find
-              something you like, add it to your own WatchList !
+              something you like, add it to your own poob list!
             </p>
           </div>
         </div>

@@ -6,8 +6,8 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Shows | WatchList",
-  description: "Shows saved in WatchList.",
+  title: "Shows | Poob",
+  description: "Shows saved in Poob.",
 };
 
 export default function ShowsPage() {

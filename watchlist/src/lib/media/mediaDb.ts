@@ -1,10 +1,10 @@
 import Database from "better-sqlite3";
 import { placeholderCardsByMediaType, type PlaceholderMediaCard } from "@/data/placeholderMedia";
 import {
-  openWatchlistDatabase,
+  openPoobDatabase,
   shouldSeedDemoData,
 } from "@/lib/db/bootstrap";
-import { runWatchlistMigrations } from "@/lib/db/migrate";
+import { runPoobMigrations } from "@/lib/db/migrate";
 
 type MediaType = "book" | "show" | "movie" | "game";
 
@@ -66,11 +66,11 @@ const mediaTypeByLabel = {
 let initialized = false;
 
 function getDb() {
-  const db = openWatchlistDatabase();
+  const db = openPoobDatabase();
 
   if (!initialized) {
     initialized = true;
-    runWatchlistMigrations(db);
+    runPoobMigrations(db);
 
     if (shouldSeedDemoData()) {
       seedPlaceholderMedia(db);
@@ -295,7 +295,7 @@ export function createManualMediaItem(formData: FormData) {
     type: mediaType,
     title,
     subtitle: optionalValue(formData.get("subtitle")),
-    description: optionalValue(formData.get("description")) ?? "Manual watchlist entry.",
+    description: optionalValue(formData.get("description")) ?? "Manual Poob entry.",
     provider: optionalValue(formData.get("provider")) ?? "Manual",
     imageUrl: optionalValue(formData.get("imageUrl")),
     imageAlt: optionalValue(formData.get("imageAlt")),

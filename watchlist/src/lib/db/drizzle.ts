@@ -1,12 +1,12 @@
 import { drizzle, type BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 
-import { openWatchlistDatabase } from "@/lib/db/bootstrap";
-import { runWatchlistMigrations } from "@/lib/db/migrate";
+import { openPoobDatabase } from "@/lib/db/bootstrap";
+import { runPoobMigrations } from "@/lib/db/migrate";
 import { authSchema } from "@/lib/db/schema/auth";
 
-export type WatchlistDrizzleDatabase = BetterSQLite3Database<typeof authSchema>;
+export type PoobDrizzleDatabase = BetterSQLite3Database<typeof authSchema>;
 
-let cachedDrizzleDb: WatchlistDrizzleDatabase | null = null;
+let cachedDrizzleDb: PoobDrizzleDatabase | null = null;
 let initialized = false;
 
 /**
@@ -14,11 +14,11 @@ let initialized = false;
  * connection.
  */
 export function getDrizzleDatabase() {
-  const sqlite = openWatchlistDatabase();
+  const sqlite = openPoobDatabase();
 
   if (!initialized) {
     initialized = true;
-    runWatchlistMigrations(sqlite);
+    runPoobMigrations(sqlite);
   }
 
   if (!cachedDrizzleDb) {

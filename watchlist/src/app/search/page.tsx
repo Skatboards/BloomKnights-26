@@ -7,8 +7,8 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Search | WatchList",
-  description: "Search across media saved in WatchList.",
+  title: "Search | Poob",
+  description: "Search across media saved in Poob.",
 };
 
 function SearchFallback() {
