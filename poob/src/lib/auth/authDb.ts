@@ -51,6 +51,15 @@ export function createUser(input: NewUserInput) {
   return userId;
 }
 
+export function deleteUser(userId: string) {
+  const db = getDb();
+  db.transaction(() => {
+    db.prepare("DELETE FROM email_verifications WHERE user_id = ?").run(userId);
+    db.prepare("DELETE FROM password_resets WHERE user_id = ?").run(userId);
+    db.prepare("DELETE FROM users WHERE id = ?").run(userId);
+  })();
+}
+
 export function findUserByEmail(email: string) {
   const db = getDb();
   return db.prepare(`
@@ -92,7 +101,11 @@ export function consumeEmailVerificationTokenByHash(tokenHash: string) {
       LIMIT 1
     `).get(tokenHash) as { id: number; user_id: string; consumed_at: string | null; expires_at: string } | undefined;
 
-    if (!verification || verification.consumed_at) {
+    if (
+      !verification ||
+      verification.consumed_at ||
+      new Date(verification.expires_at).getTime() <= Date.now()
+    ) {
       return undefined;
     }
 

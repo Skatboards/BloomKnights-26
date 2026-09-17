@@ -1,6 +1,8 @@
 import argon2 from "argon2";
+import { createHash, randomBytes } from "node:crypto";
 
-import { createUser, findUserByEmail } from "@/lib/auth/authDb";
+import { createEmailVerificationToken, createUser, deleteUser, findUserByEmail } from "@/lib/auth/authDb";
+import { sendVerificationEmail } from "@/lib/auth/email";
 import { registrationSchema } from "@/lib/auth/validation";
 
 export const runtime = "nodejs";
@@ -25,13 +27,29 @@ export async function POST(request: Request) {
   }
 
   const passwordHash = await argon2.hash(parsed.data.password);
-  createUser({
+  const userId = createUser({
     email: parsed.data.email,
     displayName: parsed.data.displayName,
     passwordHash,
   });
 
+  const token = randomBytes(32).toString("base64url");
+  const tokenHash = createHash("sha256").update(token).digest("hex");
+  createEmailVerificationToken({
+    userId,
+    tokenHash,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+  });
+
+  try {
+    await sendVerificationEmail(parsed.data.email, token);
+  } catch (error) {
+    deleteUser(userId);
+    console.error("Could not send account verification email: ", error);
+    return Response.json({ error: "We could not send a verification email. Please try again later." }, { status: 503 });
+  }
+
   return Response.json({
-    message: "Account created. Email verification delivery is not configured yet.",
+    message: "Account created. Check your email for a verification link.",
   }, { status: 201 });
 }
