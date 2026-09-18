@@ -83,7 +83,7 @@ export default function RegisterForm() {
       if (!response.ok) {
         setServerError(result.error ?? "Unable to create your account.");
       } else {
-        window.location.assign(`/auth/verify?email=${encodeURIComponent(registration.email)}`);
+        window.location.assign("/auth/verify");
       }
     } catch {
       setServerError("Unable to create your account. Try again.");

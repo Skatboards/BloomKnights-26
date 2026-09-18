@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type State = "verifying" | "success" | "error";
+type State = "sent" | "verifying" | "success" | "error";
 
 export default function VerifyEmail({ token }: { token: string }) {
-  const [state, setState] = useState<State>(token ? "verifying" : "error");
-  const [message, setMessage] = useState(token ? "Verifying your email address…" : "This verification link is invalid or expired.");
+  const [state, setState] = useState<State>(token ? "verifying" : "sent");
+  const [message, setMessage] = useState(token
+    ? "Verifying your email address…"
+    : "Your account was created. Check your inbox for a verification link. You'll need to verify before signing in.");
 
   useEffect(() => {
     if (!token) return;
@@ -43,7 +45,7 @@ export default function VerifyEmail({ token }: { token: string }) {
       )}
       {state !== "verifying" && (
         <Link href="/auth" className="mt-8 inline-block rounded-md bg-[color:var(--accent)] px-5 py-3 text-sm font-semibold text-[color:var(--accent-foreground)] transition hover:opacity-90">
-          {state === "success" ? "Sign in" : "Return to sign in"}
+          {state === "error" ? "Return to sign in" : "Sign in"}
         </Link>
       )}
     </>

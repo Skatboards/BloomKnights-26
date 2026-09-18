@@ -57,20 +57,25 @@ export default function LoginForm() {
     if (!credentials) return;
 
     setIsSubmitting(true);
-    const result = await signIn("credentials", {
-      email: credentials.email,
-      password: credentials.password,
-      redirect: false,
-      callbackUrl: "/",
-    });
+    try {
+      const result = await signIn("credentials", {
+        email: credentials.email,
+        password: credentials.password,
+        redirect: false,
+        callbackUrl: "/",
+      });
 
-    if (result?.error) {
-      setServerError("The email or password is incorrect, or the account is not verified.");
+      if (result?.error) {
+        setServerError("The email or password is incorrect, or the account is not verified.");
+        return;
+      }
+
+      window.location.assign(result?.url ?? "/");
+    } catch {
+      setServerError("Unable to sign in. Try again.");
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-
-    window.location.assign(result?.url ?? "/");
   };
 
   return (
