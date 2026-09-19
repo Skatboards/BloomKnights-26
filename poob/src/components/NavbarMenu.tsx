@@ -1,11 +1,12 @@
 "use client";
 
+import { signOut, useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 
 type Theme = "light" | "dark";
 
 type NavbarMenuProps = {
-  initialUser?: { name?: string } | null;
+  initialUser?: { name?: string | null; email?: string | null } | null;
 };
 
 const themeStorageKey = "poob-theme";
@@ -44,9 +45,11 @@ function applyTheme(theme: Theme) {
 }
 
 export default function NavbarMenu({ initialUser = null }: NavbarMenuProps) {
-  const isSignedIn = Boolean(initialUser);
-  const authHref = isSignedIn ? "/account" : "/auth";
-  const authLabel = isSignedIn ? "Account" : "Login / Sign up";
+  const { data: session } = useSession();
+  const currentUser = session?.user ?? initialUser;
+  const isSignedIn = Boolean(currentUser);
+  const authHref = "/auth";
+  const authLabel = isSignedIn ? (currentUser?.name ?? currentUser?.email ?? "Signed in") : "Login / Sign up";
   const [isOpen, setIsOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(getStoredTheme);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -115,6 +118,19 @@ export default function NavbarMenu({ initialUser = null }: NavbarMenuProps) {
           >
             {authLabel}
           </a>
+          {isSignedIn ? (
+            <button
+              type="button"
+              className="block w-full cursor-pointer px-4 py-2 text-left font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--accent-soft)]"
+              role="menuitem"
+              onClick={() => {
+                setIsOpen(false);
+                void signOut({ callbackUrl: "/" });
+              }}
+            >
+              Sign out
+            </button>
+          ) : null}
           <div
             className="flex items-center justify-between gap-4 px-4 py-2 text-[color:var(--foreground)] hover:bg-[color:var(--accent-soft)]"
             role="menuitem"
