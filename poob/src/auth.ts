@@ -1,6 +1,6 @@
 import argon2 from "argon2";
 import { eq } from "drizzle-orm";
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import Credentials from "next-auth/providers/credentials";
 
@@ -15,6 +15,10 @@ import {
   recordLoginVerificationError,
   type LoginAttemptContext,
 } from "@/lib/auth/loginSecurity";
+
+class RateLimitedSignin extends CredentialsSignin {
+  code = "rate_limited";
+}
 
 export const {
   handlers: { GET, POST },
@@ -48,7 +52,7 @@ export const {
         const loginDecision = await checkLoginAllowed(context);
         if (!loginDecision.allowed) {
           recordLoginRateLimited(context, loginDecision.reason ?? "rate_limited");
-          return null;
+          throw new RateLimitedSignin();
         }
 
         const parsedCredentials = credentialsSchema.safeParse(credentials);

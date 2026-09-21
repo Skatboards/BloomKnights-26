@@ -66,7 +66,9 @@ export default function LoginForm() {
       });
 
       if (result?.error) {
-        setServerError("The email or password is incorrect, or the account is not verified.");
+        setServerError(result.code === "rate_limited"
+          ? "Too many sign-in attempts. Please try again later."
+          : "The email or password is incorrect, or the account is not verified.");
         return;
       }
 
