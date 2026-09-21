@@ -155,5 +155,35 @@ export function up(db: Database.Database) {
       transports TEXT,
       PRIMARY KEY (userId, credentialID)
     );
+
+    CREATE TABLE login_rate_limits_account (
+      key TEXT PRIMARY KEY,
+      points INTEGER NOT NULL DEFAULT 0,
+      expire INTEGER
+    );
+
+    CREATE TABLE login_rate_limits_ip (
+      key TEXT PRIMARY KEY,
+      points INTEGER NOT NULL DEFAULT 0,
+      expire INTEGER
+    );
+
+    CREATE TABLE login_attempts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+      identifier_hash TEXT NOT NULL,
+      outcome TEXT NOT NULL CHECK (outcome IN ('success', 'failure', 'rate_limited', 'locked')),
+      reason TEXT NOT NULL,
+      ip_address TEXT,
+      user_agent TEXT,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX idx_login_attempts_user_created
+      ON login_attempts(user_id, created_at);
+    CREATE INDEX idx_login_attempts_identifier_created
+      ON login_attempts(identifier_hash, created_at);
+    CREATE INDEX idx_login_attempts_created
+      ON login_attempts(created_at);
   `);
 }

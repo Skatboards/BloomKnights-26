@@ -7,6 +7,14 @@ import Credentials from "next-auth/providers/credentials";
 import { getDrizzleDatabase } from "@/lib/db/drizzle";
 import { authSchema } from "@/lib/db/schema/auth";
 import { credentialsSchema } from "@/lib/auth/validation";
+import {
+  checkLoginAllowed,
+  recordLoginFailure,
+  recordLoginRateLimited,
+  recordLoginSuccess,
+  recordLoginVerificationError,
+  type LoginAttemptContext,
+} from "@/lib/auth/loginSecurity";
 
 export const {
   handlers: { GET, POST },
@@ -27,21 +35,38 @@ export const {
           autocomplete: "current-password",
         },
       },
-      async authorize(credentials) {
-        const parsedCredentials = credentialsSchema.safeParse(credentials);
+      async authorize(credentials, request) {
+        const email = typeof credentials?.email === "string" ? credentials.email : "";
+        const forwardedFor = request.headers.get("x-forwarded-for")?.split(",", 1)[0]?.trim();
 
-        if (!parsedCredentials.success) {
+        const context: LoginAttemptContext = {
+          email,
+          ipAddress: request.headers.get("x-real-ip") ?? forwardedFor,
+          userAgent: request.headers.get("user-agent"),
+        };
+
+        const loginDecision = await checkLoginAllowed(context);
+        if (!loginDecision.allowed) {
+          recordLoginRateLimited(context, loginDecision.reason ?? "rate_limited");
           return null;
         }
 
-        const { email, password } = parsedCredentials.data;
+        const parsedCredentials = credentialsSchema.safeParse(credentials);
+
+        if (!parsedCredentials.success) {
+          await recordLoginFailure(context, "invalid_credentials");
+          return null;
+        }
+
+        const { email: normalizedEmail, password } = parsedCredentials.data;
         const user = await getDrizzleDatabase()
           .select()
           .from(authSchema.usersTable)
-          .where(eq(authSchema.usersTable.email, email))
+          .where(eq(authSchema.usersTable.email, normalizedEmail))
           .get();
 
         if (!user || user.disabledAt || !user.emailVerified || !user.passwordHash) {
+          await recordLoginFailure({ ...context, email: normalizedEmail, userId: user?.id }, "invalid_credentials");
           return null;
         }
 
@@ -49,11 +74,15 @@ export const {
           const passwordMatches = await argon2.verify(user.passwordHash, password);
 
           if (!passwordMatches) {
+            await recordLoginFailure({ ...context, email: normalizedEmail, userId: user.id }, "invalid_credentials");
             return null;
           }
         } catch {
+          recordLoginVerificationError({ ...context, email: normalizedEmail, userId: user.id });
           return null;
         }
+
+        await recordLoginSuccess({ ...context, email: normalizedEmail, userId: user.id });
 
         return {
           id: user.id,
