@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import argon2 from "argon2";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import os from "node:os";
@@ -14,6 +15,12 @@ import {
   registrationSchema,
 } from "../src/lib/auth/validation";
 import { mediaProviders, providerLabels } from "../src/lib/media/providers";
+import { createUser } from "../src/lib/auth/authDb";
+import {
+  consumePasswordResetToken,
+  createPasswordResetRequest,
+  hashPassword,
+} from "../src/lib/auth/passwordReset";
 
 import {
   checkLoginAllowed,
@@ -247,4 +254,29 @@ test("IP limits cover multiple accounts", async () => {
     .prepare("SELECT outcome, reason FROM login_attempts ORDER BY id")
     .all() as Array<{ outcome: string; reason: string }>;
   assert.equal(attempts.at(-1)?.outcome, "success");
+});
+
+test("password reset tokens are single-use and update the password atomically", async () => {
+  freshLoginSecurityDatabase();
+  const oldHash = await hashPassword("OldPassword-123!");
+  const userId = createUser({
+    email: "reset@example.com",
+    displayName: "Reset Member",
+    passwordHash: oldHash,
+  });
+
+  const reset = createPasswordResetRequest({ email: "RESET@example.com" });
+  assert.ok(reset);
+  assert.equal(reset.userId, userId);
+  assert.equal(createPasswordResetRequest({ email: "missing@example.com" }), undefined);
+
+  const newHash = await hashPassword("NewPassword-456!");
+  const consumed = consumePasswordResetToken(reset.token, newHash);
+  assert.equal(consumed?.id, userId);
+  assert.equal(consumePasswordResetToken(reset.token, newHash), undefined);
+
+  const row = openPoobDatabase({ dataDir: loginSecurityDataDir })
+    .prepare("SELECT password_hash FROM users WHERE id = ?")
+    .get(userId) as { password_hash: string };
+  assert.equal(await argon2.verify(row.password_hash, "NewPassword-456!"), true);
 });

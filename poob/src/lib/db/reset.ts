@@ -7,6 +7,7 @@ import { resetAuthDatabaseStateForTests } from "@/lib/auth/authDb";
 import { resetDrizzleDatabaseStateForTests } from "@/lib/db/drizzle";
 import { resetMediaDatabaseStateForTests } from "@/lib/media/mediaDb";
 import { resetLoginSecurityStateForTests } from "@/lib/auth/loginSecurity";
+import { resetPasswordResetStateForTests } from "@/lib/auth/passwordReset";
 
 export type ResetDatabaseOptions = PoobDatabaseOptions & {
   deleteFile?: boolean;
@@ -21,6 +22,7 @@ export function resetDatabaseForTests(options: ResetDatabaseOptions = {}) {
   resetAuthDatabaseStateForTests();
   resetDrizzleDatabaseStateForTests();
   resetLoginSecurityStateForTests();
+  resetPasswordResetStateForTests();
 
   if (options.deleteFile) {
     deletePoobDatabaseForTests(options);
