@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync } from "node:fs";
 import { test } from "node:test";
+import os from "node:os";
+import path from "node:path";
+
 
 import {
   credentialsSchema,
@@ -11,6 +14,29 @@ import {
   registrationSchema,
 } from "../src/lib/auth/validation";
 import { mediaProviders, providerLabels } from "../src/lib/media/providers";
+
+import {
+  checkLoginAllowed,
+  recordLoginFailure,
+  recordLoginSuccess,
+  recordLoginVerificationError,
+} from "../src/lib/auth/loginSecurity";
+
+import { openPoobDatabase } from "../src/lib/db/bootstrap";
+
+import { resetDatabaseForTests } from "../src/lib/db/reset";
+
+const loginSecurityDataDir = mkdtempSync(path.join(os.tmpdir(), "poob-login-security-"));
+process.env.POOB_DATA_DIR = loginSecurityDataDir;
+process.env.POOB_SEED_DEMO_DATA = "false";
+
+function freshLoginSecurityDatabase() {
+  resetDatabaseForTests({ dataDir: loginSecurityDataDir, deleteFile: true });
+}
+
+function loginContext(email = "member@example.com", ipAddress = "203.0.113.10") {
+  return { email, ipAddress, userAgent: "library-test" };
+}
 
 type LibraryInput = {
   case: string;
@@ -133,6 +159,7 @@ test("registrationSchema accepts a strong password", () => {
 test("getPasswordStrengthLabel maps every supported score", () => {
   for (const input of inputs.filter((candidate) => candidate.case.startsWith("password-label-"))) {
     const score = Number(input.input);
+    
     assert.equal(getPasswordStrengthLabel(score), input.expected);
   }
 });
@@ -143,4 +170,81 @@ test("media provider metadata exposes unique provider ids and labels", () => {
   assert.equal(new Set(ids).size, ids.length);
   assert.deepEqual(providerLabels, mediaProviders.map((provider) => provider.label));
   assert.equal(mediaProviders.every((provider) => provider.cacheTtlDays > 0), true);
+});
+
+test("login security blocks an account after five failed attempts and audits the block", async () => {
+  freshLoginSecurityDatabase();
+  const context = loginContext();
+
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    const result = await recordLoginFailure(context);
+    assert.equal(result.blocked, false);
+  }
+
+  const blockedAttempt = await recordLoginFailure(context);
+  assert.equal(blockedAttempt.blocked, true);
+
+  const decision = await checkLoginAllowed(context);
+  assert.equal(decision.allowed, false);
+  assert.equal(decision.reason, "account_rate_limited");
+  assert.ok((decision.retryAfterSeconds ?? 0) > 0);
+
+  const attempts = openPoobDatabase({ dataDir: loginSecurityDataDir })
+    .prepare("SELECT outcome, reason FROM login_attempts ORDER BY id")
+    .all() as Array<{ outcome: string; reason: string }>;
+
+  assert.deepEqual(attempts.map((attempt) => attempt.outcome), ["failure", "failure", "failure", "failure", "locked"]);
+  assert.equal(attempts.at(-1)?.reason, "rate_limit_reached");
+});
+
+test("verification errors are audited without consuming login-failure points", async () => {
+  freshLoginSecurityDatabase();
+  const context = loginContext();
+
+  recordLoginVerificationError(context);
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    const result = await recordLoginFailure(context);
+    assert.equal(result.blocked, false);
+  }
+
+  assert.equal((await checkLoginAllowed(context)).allowed, true);
+  const attempts = openPoobDatabase({ dataDir: loginSecurityDataDir })
+    .prepare("SELECT outcome, reason FROM login_attempts ORDER BY id")
+    .all() as Array<{ outcome: string; reason: string }>;
+
+  assert.equal(attempts[0]?.reason, "password_verification_error");
+  assert.equal(attempts[0]?.outcome, "failure");
+});
+
+test("IP limits cover multiple accounts", async () => {
+  freshLoginSecurityDatabase();
+
+  for (let attempt = 1; attempt <= 29; attempt += 1) {
+    const result = await recordLoginFailure(loginContext(`member-${attempt}@example.com`));
+    assert.equal(result.blocked, false);
+  }
+
+  const blocked = await recordLoginFailure(loginContext("member-30@example.com"));
+  assert.equal(blocked.blocked, true);
+
+  const limited = await checkLoginAllowed(loginContext("member-31@example.com"));
+  assert.equal(limited.allowed, false);
+  assert.equal(limited.reason, "ip_rate_limited");
+
+  await recordLoginSuccess(loginContext("member-32@example.com"));
+  const stillLimited = await checkLoginAllowed(loginContext("member-33@example.com"));
+  assert.equal(stillLimited.allowed, false);
+  assert.equal(stillLimited.reason, "ip_rate_limited");
+
+  const accountContext = loginContext("account-reset@example.com", "203.0.113.11");
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    await recordLoginFailure(accountContext);
+  }
+  await recordLoginSuccess(accountContext);
+  assert.equal((await checkLoginAllowed(accountContext)).allowed, true);
+
+  const attempts = openPoobDatabase({ dataDir: loginSecurityDataDir })
+    .prepare("SELECT outcome, reason FROM login_attempts ORDER BY id")
+    .all() as Array<{ outcome: string; reason: string }>;
+  assert.equal(attempts.at(-1)?.outcome, "success");
 });
