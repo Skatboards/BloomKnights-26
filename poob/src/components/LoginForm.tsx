@@ -4,19 +4,11 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
-import { credentialsSchema, emailSchema } from "@/lib/auth/validation";
+import { credentialsSchema, validateEmail, validatePassword } from "@/lib/auth/validation";
 import Navbar from "@/components/Navbar";
 
 type FieldName = "email" | "password";
 type FieldErrors = Partial<Record<FieldName, string>>;
-
-function validateField(field: FieldName, value: string) {
-  const result = field === "email"
-    ? emailSchema.safeParse(value)
-    : credentialsSchema.shape.password.safeParse(value);
-
-  return result.success ? undefined : result.error.issues[0]?.message;
-}
 
 export default function LoginForm() {
   const [values, setValues] = useState({ email: "", password: "" });
@@ -108,7 +100,7 @@ export default function LoginForm() {
                 autoComplete="email"
                 value={values.email}
                 onChange={(event) => updateField("email", event.target.value)}
-                onBlur={() => setErrors((current) => ({ ...current, email: validateField("email", values.email) }))}
+                onBlur={() => setErrors((current) => ({ ...current, email: validateEmail(values.email) }))}
                 aria-invalid={Boolean(errors.email)}
                 aria-describedby={errors.email ? "email-error" : undefined}
                 className="h-11 rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 text-sm outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]"
@@ -130,7 +122,7 @@ export default function LoginForm() {
                   autoComplete="current-password"
                   value={values.password}
                   onChange={(event) => updateField("password", event.target.value)}
-                  onBlur={() => setErrors((current) => ({ ...current, password: validateField("password", values.password) }))}
+                  onBlur={() => setErrors((current) => ({ ...current, password: validatePassword(values.password) }))}
                   aria-invalid={Boolean(errors.password)}
                   aria-describedby={errors.password ? "password-error" : undefined}
                   className="h-11 w-full rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 pr-20 text-sm outline-none transition focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]"

@@ -4,21 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 import Navbar from "@/components/Navbar";
-import { emailSchema, evaluatePasswordStrength, getPasswordStrengthLabel, registrationFormSchema } from "@/lib/auth/validation";
+import { evaluatePasswordStrength, getPasswordStrengthLabel, registrationFormSchema, validateDisplayName, validateEmail, validateRegistrationPassword } from "@/lib/auth/validation";
 
 type FieldName = "displayName" | "email" | "password";
 type FieldErrors = Partial<Record<FieldName, string>>;
-
-function validateField(field: FieldName, value: string) {
-  const schema = field === "displayName"
-    ? registrationFormSchema.shape.displayName
-    : field === "email"
-      ? emailSchema
-      : registrationFormSchema.shape.password;
-  const result = schema.safeParse(value);
-
-  return result.success ? undefined : result.error.issues[0]?.message;
-}
 
 export default function RegisterForm() {
   const [values, setValues] = useState({ displayName: "", email: "", password: "" });
@@ -108,20 +97,20 @@ export default function RegisterForm() {
             <form className="mt-8 grid gap-5" onSubmit={handleSubmit} noValidate>
               <div className="grid gap-2">
                 <label htmlFor="displayName" className="text-sm font-medium">Display Name</label>
-                <input id="displayName" name="displayName" type="text" autoComplete="name" value={values.displayName} onChange={(event) => updateField("displayName", event.target.value)} onBlur={() => setErrors((current) => ({ ...current, displayName: validateField("displayName", values.displayName) }))} aria-invalid={Boolean(errors.displayName)} aria-describedby={errors.displayName ? "displayName-error" : undefined} className="h-11 rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 text-sm outline-none transition focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]" />
+                <input id="displayName" name="displayName" type="text" autoComplete="name" value={values.displayName} onChange={(event) => updateField("displayName", event.target.value)} onBlur={() => setErrors((current) => ({ ...current, displayName: validateDisplayName(values.displayName) }))} aria-invalid={Boolean(errors.displayName)} aria-describedby={errors.displayName ? "displayName-error" : undefined} className="h-11 rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 text-sm outline-none transition focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]" />
                 {errors.displayName ? <p id="displayName-error" className="text-sm text-red-400">{errors.displayName}</p> : null}
               </div>
 
               <div className="grid gap-2">
                 <label htmlFor="register-email" className="text-sm font-medium">Email</label>
-                <input id="register-email" name="email" type="email" autoComplete="email" value={values.email} onChange={(event) => updateField("email", event.target.value)} onBlur={() => setErrors((current) => ({ ...current, email: validateField("email", values.email) }))} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "register-email-error" : undefined} className="h-11 rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 text-sm outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]" placeholder="you@example.com" />
+                <input id="register-email" name="email" type="email" autoComplete="email" value={values.email} onChange={(event) => updateField("email", event.target.value)} onBlur={() => setErrors((current) => ({ ...current, email: validateEmail(values.email) }))} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "register-email-error" : undefined} className="h-11 rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 text-sm outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]" placeholder="you@example.com" />
                 {errors.email ? <p id="register-email-error" className="text-sm text-red-400">{errors.email}</p> : null}
               </div>
 
               <div className="grid gap-2">
                 <label htmlFor="register-password" className="text-sm font-medium">Password</label>
                 <div className="relative">
-                  <input id="register-password" name="password" type={showPassword ? "text" : "password"} autoComplete="new-password" value={values.password} onChange={(event) => updateField("password", event.target.value)} onBlur={() => setErrors((current) => ({ ...current, password: validateField("password", values.password) }))} aria-invalid={Boolean(errors.password)} aria-describedby={errors.password ? "register-password-error password-strength" : "password-strength"} className="h-11 w-full rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 pr-20 text-sm outline-none transition focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]" />
+                  <input id="register-password" name="password" type={showPassword ? "text" : "password"} autoComplete="new-password" value={values.password} onChange={(event) => updateField("password", event.target.value)} onBlur={() => setErrors((current) => ({ ...current, password: validateRegistrationPassword(values.password) }))} aria-invalid={Boolean(errors.password)} aria-describedby={errors.password ? "register-password-error password-strength" : "password-strength"} className="h-11 w-full rounded-md border border-[color:var(--border-strong)] bg-[color:var(--surface-strong)] px-3 pr-20 text-sm outline-none transition focus:border-[color:var(--accent)] focus:ring-2 focus:ring-[color:var(--accent-soft)]" />
                   <button type="button" onClick={() => setShowPassword((visible) => !visible)} className="absolute inset-y-0 right-3 select-none text-xs font-medium text-[color:var(--muted)] [-webkit-tap-highlight-color:transparent] hover:text-[color:var(--foreground)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]" aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "Hide" : "Show"}</button>
                 </div>
                 {errors.password ? <p id="register-password-error" className="text-sm text-red-400">{errors.password}</p> : null}
