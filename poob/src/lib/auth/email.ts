@@ -67,3 +67,22 @@ export async function sendVerificationEmail(email: string, token: string) {
     html: `<p>Verify your Poob account by clicking the link below.</p><p><a href="${verificationUrl.toString()}">Verify email address</a></p><p>This link expires in 24 hours.</p>`,
   });
 }
+
+export async function sendPasswordResetEmail(email: string, token: string) {
+  const from = process.env.EMAIL_FROM;
+
+  if (!from) {
+    throw new Error("EMAIL_FROM must be configured to send email.");
+  }
+
+  const resetUrl = new URL("/auth/password-reset", getAppUrl());
+  resetUrl.searchParams.set("token", token);
+
+  await getTransport().sendMail({
+    from: from,
+    to: email,
+    subject: "Reset your Poob password",
+    text: `Reset your Poob password by opening this link: ${resetUrl.toString()}`,
+    html: `<p>Reset your Poob password by clicking the link below.</p><p><a href="${resetUrl.toString()}">Reset password</a></p><p>This link expires in 1 hour and can only be used once.</p>`,
+  });
+}
