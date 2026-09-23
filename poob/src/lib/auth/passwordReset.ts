@@ -48,13 +48,15 @@ export function createPasswordResetRequest(input: PasswordResetRequest): Passwor
   const expiresAt = new Date(Date.now() + (input.expiresInMs ?? DEFAULT_TOKEN_LIFETIME_MS)).toISOString();
   const db = getDb();
 
-  db.transaction(() => {
-    db.prepare("DELETE FROM password_resets WHERE user_id = ? AND consumed_at IS NULL").run(user.id);
-    db.prepare(`
-      INSERT INTO password_resets (user_id, token_hash, expires_at)
-      VALUES (?, ?, ?)
-    `).run(user.id, hashToken(token), expiresAt);
-  })();
+  db.prepare(`
+    INSERT INTO password_resets (user_id, token_hash, expires_at)
+    VALUES (?, ?, ?)
+    ON CONFLICT(user_id) DO UPDATE SET
+      token_hash = excluded.token_hash,
+      expires_at = excluded.expires_at,
+      created_at = CURRENT_TIMESTAMP,
+      consumed_at = NULL
+  `).run(user.id, hashToken(token), expiresAt);
 
   return { userId: user.id, email: user.email, token, expiresAt };
 }
@@ -101,7 +103,6 @@ export function consumePasswordResetToken(token: string, passwordHash: string) {
       WHERE id = ?
     `).run(passwordHash, user.id);
     db.prepare("UPDATE password_resets SET consumed_at = CURRENT_TIMESTAMP WHERE id = ?").run(reset.id);
-    db.prepare("DELETE FROM password_resets WHERE user_id = ? AND id != ?").run(user.id, reset.id);
 
     return user;
   })();

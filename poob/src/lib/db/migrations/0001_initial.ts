@@ -106,14 +106,13 @@ export function up(db: Database.Database) {
 
     CREATE TABLE password_resets (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      user_id TEXT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
       token_hash TEXT NOT NULL UNIQUE,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       expires_at TEXT NOT NULL,
       consumed_at TEXT
     );
 
-    CREATE INDEX idx_password_resets_user_id ON password_resets(user_id);
     CREATE INDEX idx_password_resets_expires_at ON password_resets(expires_at);
 
     CREATE TABLE account (

@@ -125,16 +125,6 @@ export function consumeEmailVerificationTokenByHash(tokenHash: string) {
   })();
 }
 
-export function createPasswordResetToken(input: AuthTokenInput) {
-  const db = getDb();
-  const result = db.prepare(`
-    INSERT INTO password_resets (user_id, token_hash, expires_at)
-    VALUES (?, ?, ?)
-  `).run(input.userId, input.tokenHash, input.expiresAt);
-
-  return Number(result.lastInsertRowid);
-}
-
 /** @internal Used by resetDatabaseForTests. */
 export function resetAuthDatabaseStateForTests() {
   initialized = false;

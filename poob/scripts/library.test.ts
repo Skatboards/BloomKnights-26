@@ -270,13 +270,23 @@ test("password reset tokens are single-use and update the password atomically", 
   assert.equal(reset.userId, userId);
   assert.equal(createPasswordResetRequest({ email: "missing@example.com" }), undefined);
 
+  const replacement = createPasswordResetRequest({ email: "reset@example.com" });
+  assert.ok(replacement);
+  assert.notEqual(replacement.token, reset.token);
+  assert.equal(consumePasswordResetToken(reset.token, oldHash), undefined);
+
   const newHash = await hashPassword("NewPassword-456!");
-  const consumed = consumePasswordResetToken(reset.token, newHash);
+  const consumed = consumePasswordResetToken(replacement.token, newHash);
   assert.equal(consumed?.id, userId);
-  assert.equal(consumePasswordResetToken(reset.token, newHash), undefined);
+  assert.equal(consumePasswordResetToken(replacement.token, newHash), undefined);
 
   const row = openPoobDatabase({ dataDir: loginSecurityDataDir })
     .prepare("SELECT password_hash FROM users WHERE id = ?")
     .get(userId) as { password_hash: string };
   assert.equal(await argon2.verify(row.password_hash, "NewPassword-456!"), true);
+  
+  const resetCount = openPoobDatabase({ dataDir: loginSecurityDataDir })
+    .prepare("SELECT COUNT(*) AS count FROM password_resets WHERE user_id = ?")
+    .get(userId) as { count: number };
+  assert.equal(resetCount.count, 1);
 });
